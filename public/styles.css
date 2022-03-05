@@ -3,4 +3,18 @@ body {
     justify-content: center;
     align-items: center; 
     flex-direction: column;
+    font-family: monospace;
+}
+
+.incomplete {
+    color: #555555;
+}
+
+.correct {
+    color: green;
+}
+
+.incorrect {
+    color: red;
+    text-decoration: line-through;
 }

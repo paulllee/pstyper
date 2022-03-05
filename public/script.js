@@ -12,7 +12,13 @@ function replaceQuote() {
     }).then(function(data) {
         if (data.status === 200) {
             const quote = data.content;
-            quoteDiv.innerText = quote;
+            quoteDiv.innerText = "";
+            quote.split("").forEach(char => {
+                const charSpan = document.createElement("span");
+                charSpan.innerText = char;
+                quoteDiv.append(charSpan);
+            });
+            input.value = null;
         };
     });
 };

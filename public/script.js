@@ -39,6 +39,11 @@ function startTimer() {
 function stopTimer() {
     finishTime = new Date();
 }
+
+function getTime() {
+    return finishTime - startTime;
+}
+
 function replaceQuote() {
     fetch("/quotable", {
         method: "GET",

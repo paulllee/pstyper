@@ -6,3 +6,7 @@ developed by selim genel and paul lee
 
 nodejs
 npm install
+
+https://github.com/lukePeavey/quotable
+
+https://github.com/RazorSh4rk/random-word-api

@@ -8,7 +8,7 @@ const hostname = "localhost";
 app.use(express.static("public"));
 app.use(express.json());
 
-const QUOTABLE_API_URL = 'http://api.quotable.io/random';
+const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100';
 
 app.get("/quotable", function(req, res) {
     axios.get(QUOTABLE_API_URL).then(function (response) {

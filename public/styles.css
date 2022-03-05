@@ -23,11 +23,11 @@ textarea {
 }
 
 .incomplete {
-    color: #555555;
+    color: gray;
 }
 
 .correct {
-    color: green;
+    color: black;
 }
 
 .incorrect {

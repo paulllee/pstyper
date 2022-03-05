@@ -15,8 +15,7 @@ app.get("/quotable", function(req, res) {
         res.status(200);
         res.json({"status": 200,
         "content": response.data.content,
-        "author": response.data.author,
-        "length": response.data.length});
+        "author": response.data.author});
     });
 })
 

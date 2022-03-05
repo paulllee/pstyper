@@ -1,6 +1,6 @@
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
-var startTime, finishTime;
+var startTime, finishTime, wordCount;
 var i = 0;
 
 input.addEventListener("blur", () => {
@@ -41,7 +41,7 @@ input.addEventListener("input", () => {
     if (isGameDone(quoteSpanArray, inputArray)) {
         i = 0;
         stopTimer();
-        console.log(getTime());
+        console.log(wordCount);
     }
 });
 
@@ -68,6 +68,10 @@ function isGameDone(qArr, iArr) {
     return gameOver;
 }
 
+function setWordCount(quote) {
+    wordCount = quote.split(" ").length;   
+}
+
 function replaceQuote() {
     fetch("/quotable", {
         method: "GET",
@@ -79,6 +83,7 @@ function replaceQuote() {
     }).then(function(data) {
         if (data.status === 200) {
             const quote = data.content;
+            setWordCount(quote);
             quoteDiv.innerText = "";
             quote.split("").forEach(char => {
                 const charSpan = document.createElement("span");

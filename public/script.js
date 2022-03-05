@@ -1,5 +1,6 @@
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
+let startTime;
 
 input.addEventListener("blur", () => {
     input.setAttribute("placeholder", "click here to focus");
@@ -30,6 +31,10 @@ input.addEventListener("input", () => {
         }
     })
 });
+
+function startTimer() {
+    startTime = new Date();
+}
 
 function replaceQuote() {
     fetch("/quotable", {

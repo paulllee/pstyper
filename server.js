@@ -10,10 +10,12 @@ app.use(express.json());
 
 const QUOTABLE_API_URL = 'http://api.quotable.io/random';
 
-app.get("/", function(req, res) {
+app.get("/quotable", function(req, res) {
     axios.get(QUOTABLE_API_URL).then(function (response) {
         res.status(200);
-        res.json({"quote": response.data});
+        res.json({"content": response.data.content,
+        "author": response.data.author,
+        "length": response.data.length});
     });
 })
 

@@ -2,7 +2,7 @@ const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 
 input.addEventListener("blur", () => {
-    input.setAttribute("placeholder", "click HERE to focus...");
+    input.setAttribute("placeholder", "click here to focus");
 });
 
 input.addEventListener("focus", () => {

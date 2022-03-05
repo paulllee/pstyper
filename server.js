@@ -13,7 +13,8 @@ const QUOTABLE_API_URL = 'http://api.quotable.io/random';
 app.get("/quotable", function(req, res) {
     axios.get(QUOTABLE_API_URL).then(function (response) {
         res.status(200);
-        res.json({"content": response.data.content,
+        res.json({"status": 200,
+        "content": response.data.content,
         "author": response.data.author,
         "length": response.data.length});
     });

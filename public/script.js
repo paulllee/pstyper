@@ -1,6 +1,14 @@
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 
+input.addEventListener("blur", () => {
+    input.setAttribute("placeholder", "click HERE to focus...");
+});
+
+input.addEventListener("focus", () => {
+    input.setAttribute("placeholder", "start typing...");
+});
+
 input.addEventListener("input", () => {
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");

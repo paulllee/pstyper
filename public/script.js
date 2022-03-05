@@ -1,6 +1,7 @@
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 var startTime, finishTime;
+var i = 0;
 
 input.addEventListener("blur", () => {
     input.setAttribute("placeholder", "click here to focus");
@@ -11,6 +12,12 @@ input.addEventListener("focus", () => {
 });
 
 input.addEventListener("input", () => {
+    if (i === 0) {
+        startTimer();
+        i++;
+        console.log("start time: " + startTime);
+    }
+
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
     
@@ -29,7 +36,13 @@ input.addEventListener("input", () => {
             charSpan.classList.remove("correct");
             charSpan.classList.remove("incomplete");
         }
-    })
+    });
+
+    if (isGameDone(quoteSpanArray, inputArray)) {
+        i = 0;
+        stopTimer();
+        console.log(getTime());
+    }
 });
 
 function startTimer() {
@@ -41,7 +54,18 @@ function stopTimer() {
 }
 
 function getTime() {
-    return finishTime - startTime;
+    return (finishTime - startTime)/1000;
+}
+
+function isGameDone(qArr, iArr) {
+    let gameOver = true;
+    qArr.forEach((charSpan, index) => {
+        const char = iArr[index];
+        if (!(charSpan.innerText === char)) {
+            gameOver = false;
+        }
+    });
+    return gameOver;
 }
 
 function replaceQuote() {

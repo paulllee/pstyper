@@ -1,6 +1,7 @@
-let axios = require("axios");
+const axios = require("axios");
 const express = require("express");
 const app = express();
+const socketio = require("socket.io");
 
 const port = 3000;
 const hostname = "localhost";
@@ -23,6 +24,7 @@ app.get("/quotable", function(req, res) {
     });
 })
 
-app.listen(port, hostname, () => {
+const server = app.listen(port, hostname, () => {
     console.log(`Listening at: http://${hostname}:${port}`);
 });
+const io = socketio(server);

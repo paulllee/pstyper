@@ -40,3 +40,7 @@ textarea {
     color: red;
     text-decoration: line-through;
 }
+
+.current {
+    text-decoration: underline;
+}

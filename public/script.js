@@ -4,6 +4,7 @@ const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 var startTime, finishTime, wordCount;
 var startGame = true;
+var firstLetter = true;
 var correct = 0;
 var incorrect = 0;
 
@@ -26,22 +27,30 @@ input.addEventListener("input", () => {
     
     quoteSpanArray.forEach((charSpan, index) => {
         const char = inputArray[index];
+
         if (char == null) {
             charSpan.classList.add("incomplete");
             charSpan.classList.remove("correct");
             charSpan.classList.remove("incorrect");
+            charSpan.classList.remove("current");
         } else if (char === charSpan.innerText) {
             if (!(charSpan.classList.contains("correct")))
                 correct++;
             charSpan.classList.add("correct");
             charSpan.classList.remove("incorrect");
             charSpan.classList.remove("incomplete");
+            charSpan.classList.remove("current");
         } else {
             if (!(charSpan.classList.contains("incorrect")))
                 incorrect++;
             charSpan.classList.add("incorrect");
             charSpan.classList.remove("correct");
             charSpan.classList.remove("incomplete");
+            charSpan.classList.remove("current");
+        }
+
+        if (inputArray.length === index) {
+            charSpan.classList.add("current");
         }
     });
 
@@ -83,7 +92,7 @@ function setWordCount(quote) {
 }
 
 function getWPM() {
-    return Math.floor(60 * wordCount / getTime());
+    return Math.floor(wordCount / (getTime() / 60));
 }
 
 function updateQuotable() {
@@ -102,10 +111,14 @@ function updateQuotable() {
             quote.split("").forEach(char => {
                 const charSpan = document.createElement("span");
                 charSpan.classList.add("incomplete");
+                if (firstLetter) 
+                    charSpan.classList.add("current");
+                firstLetter = false;
                 charSpan.innerText = char;
                 quoteDiv.append(charSpan);
             });
             input.value = null;
+            firstLetter = true;
         } else {
             quoteDiv.innerText = "ERROR: Cannot connect to Quotable API. Please REFRESH the page.";
             quoteDiv.style.color = "red";

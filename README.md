@@ -6,6 +6,7 @@ developed by selim genel and paul lee
 
 nodejs
 npm install
+express, axios, socket.io
 
 https://github.com/lukePeavey/quotable
 

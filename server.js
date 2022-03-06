@@ -12,7 +12,7 @@ const port = 3000;
 app.use(express.static("public"));
 app.use(express.json());
 
-const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=200';
+const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=150';
 
 app.get("/quotable", function(req, res) {
     axios.get(QUOTABLE_API_URL).then(function (response) {
@@ -28,10 +28,9 @@ app.get("/quotable", function(req, res) {
 });
 
 io.on("connection", (socket) => {
-    console.log("user connected");
-    socket.on("disconnect", () => {
-        console.log("user disconnected");
-    })
+    socket.on("create", function(room) {
+        socket.join(room);
+    });
 });
 
 server.listen(port, () => {

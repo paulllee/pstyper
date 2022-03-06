@@ -2,10 +2,9 @@ const wpmDiv = document.getElementById("wpm");
 const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
-var startTime, finishTime, wordCount;
+var startTime, finishTime, charLength;
 var startGame = true;
 var firstLetter = true;
-var correct = 0;
 var incorrect = 0;
 
 input.addEventListener("blur", () => {
@@ -34,15 +33,11 @@ input.addEventListener("input", () => {
             charSpan.classList.remove("incorrect");
             charSpan.classList.remove("current");
         } else if (char === charSpan.innerText) {
-            if (!(charSpan.classList.contains("correct")))
-                correct++;
             charSpan.classList.add("correct");
             charSpan.classList.remove("incorrect");
             charSpan.classList.remove("incomplete");
             charSpan.classList.remove("current");
         } else {
-            if (!(charSpan.classList.contains("incorrect")))
-                incorrect++;
             charSpan.classList.add("incorrect");
             charSpan.classList.remove("correct");
             charSpan.classList.remove("incomplete");
@@ -51,15 +46,15 @@ input.addEventListener("input", () => {
 
         if (inputArray.length === index) {
             charSpan.classList.add("current");
-        }
+        } else if ((inputArray.length - 1 === index) && (charSpan.classList.contains("incorrect")))
+            incorrect++;
     });
 
     if (isGameDone(quoteSpanArray, inputArray)) {
         startGame = true;
         stopTimer();
         wpmDiv.innerText = "Your WPM is: " + getWPM();
-        accDiv.innerText = "Your Accuracy Percentage is: " + (100 * correct / (correct+incorrect)).toFixed(2) + "%";
-        correct = 0;
+        accDiv.innerText = "Your Accuracy Percentage is: " + (100 * charLength / (charLength + incorrect)).toFixed(2) + "%";
         incorrect = 0;
         input.readOnly = true;
     };
@@ -87,12 +82,9 @@ function isGameDone(qArr, iArr) {
     return gameOver;
 }
 
-function setWordCount(quote) {
-    wordCount = quote.split(" ").length;   
-}
-
 function getWPM() {
-    return Math.floor(wordCount / (getTime() / 60));
+    let cpm = charLength / (getTime() / 60);
+    return Math.floor(cpm / 5);
 }
 
 function updateQuotable() {
@@ -106,7 +98,7 @@ function updateQuotable() {
     }).then(function(data) {
         if (data.status === 200) {
             const quote = data.content;
-            setWordCount(quote);
+            charLength = data.len;
             quoteDiv.innerText = "";
             quote.split("").forEach(char => {
                 const charSpan = document.createElement("span");

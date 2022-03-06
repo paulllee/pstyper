@@ -2,7 +2,7 @@ const wpmDiv = document.getElementById("wpm");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 var startTime, finishTime, wordCount;
-var i = 0;
+var startGame = 0;
 
 input.addEventListener("blur", () => {
     input.setAttribute("placeholder", "click here to focus");
@@ -13,9 +13,9 @@ input.addEventListener("focus", () => {
 });
 
 input.addEventListener("input", () => {
-    if (i === 0) {
+    if (startGame === 0) {
         startTimer();
-        i++;
+        startGame++;
     };
 
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
@@ -39,7 +39,7 @@ input.addEventListener("input", () => {
     });
 
     if (isGameDone(quoteSpanArray, inputArray)) {
-        i = 0;
+        startGame = 0;
         stopTimer();
         wpmDiv.innerText = "Your WPM is: " + getWPM();
         input.readOnly = true;

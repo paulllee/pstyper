@@ -6,6 +6,7 @@ var startTime, finishTime, charLength;
 var startGame = true;
 var firstLetter = true;
 var incorrect = 0;
+var socket = io();
 
 input.addEventListener("blur", () => {
     input.setAttribute("placeholder", "click here to focus");

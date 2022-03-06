@@ -1,7 +1,11 @@
 const axios = require("axios");
 const express = require("express");
 const app = express();
-const socketio = require("socket.io");
+
+const http = require('http');
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const io = new Server(server);
 
 const port = 3000;
 const hostname = "localhost";
@@ -22,9 +26,15 @@ app.get("/quotable", function(req, res) {
         res.status(400);
         res.json({"status": 400});
     });
-})
+});
 
-const server = app.listen(port, hostname, () => {
+io.on("connection", (socket) => {
+    console.log("user connected");
+    socket.on("disconnect", () => {
+        console.log("user disconnected");
+    })
+});
+
+server.listen(port, hostname, () => {
     console.log(`Listening at: http://${hostname}:${port}`);
 });
-const io = socketio(server);

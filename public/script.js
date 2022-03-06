@@ -49,7 +49,7 @@ input.addEventListener("input", () => {
         startGame = true;
         stopTimer();
         wpmDiv.innerText = "Your WPM is: " + getWPM();
-        accDiv.innerText = "Your Accuracy Percentage is: %" + (100 * correct / (correct+incorrect)).toFixed(2);
+        accDiv.innerText = "Your Accuracy Percentage is: " + (100 * correct / (correct+incorrect)).toFixed(2) + "%";
         correct = 0;
         incorrect = 0;
         input.readOnly = true;

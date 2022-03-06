@@ -1,3 +1,4 @@
+const wpmDiv = document.getElementById("wpm");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 var startTime, finishTime, wordCount;
@@ -15,8 +16,7 @@ input.addEventListener("input", () => {
     if (i === 0) {
         startTimer();
         i++;
-        console.log("start time: " + startTime);
-    }
+    };
 
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
@@ -41,10 +41,9 @@ input.addEventListener("input", () => {
     if (isGameDone(quoteSpanArray, inputArray)) {
         i = 0;
         stopTimer();
-        console.log(getTime());
-        console.log(wordCount);
-        console.log(getWPM());
-    }
+        wpmDiv.innerText = "Your WPM is: " + getWPM();
+        input.readOnly = true;
+    };
 });
 
 function startTimer() {
@@ -63,9 +62,8 @@ function isGameDone(qArr, iArr) {
     let gameOver = true;
     qArr.forEach((charSpan, index) => {
         const char = iArr[index];
-        if (!(charSpan.innerText === char)) {
+        if (!(charSpan.innerText === char)) 
             gameOver = false;
-        }
     });
     return gameOver;
 }
@@ -78,7 +76,7 @@ function getWPM() {
     return Math.floor(60 * wordCount / getTime());
 }
 
-function replaceQuote() {
+function updateQuotable() {
     fetch("/quotable", {
         method: "GET",
         headers: {
@@ -98,6 +96,9 @@ function replaceQuote() {
                 quoteDiv.append(charSpan);
             });
             input.value = null;
+        } else {
+            quoteDiv.innerText = "ERROR: Cannot connect to Quotable API. Please REFRESH the page.";
+            quoteDiv.style.color = "red";
         };
     });
 };

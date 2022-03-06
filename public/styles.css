@@ -25,6 +25,10 @@ textarea {
     border: none;
 }
 
+.quote {
+    margin-top: 15px;
+}
+
 .incomplete {
     color: gray;
 }

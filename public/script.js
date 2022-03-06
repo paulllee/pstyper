@@ -41,7 +41,9 @@ input.addEventListener("input", () => {
     if (isGameDone(quoteSpanArray, inputArray)) {
         i = 0;
         stopTimer();
+        console.log(getTime());
         console.log(wordCount);
+        console.log(getWPM());
     }
 });
 
@@ -70,6 +72,10 @@ function isGameDone(qArr, iArr) {
 
 function setWordCount(quote) {
     wordCount = quote.split(" ").length;   
+}
+
+function getWPM() {
+    return Math.floor(60 * wordCount / getTime());
 }
 
 function replaceQuote() {

@@ -46,10 +46,6 @@ textarea {
     text-decoration: underline;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:hover {
-    background: white; 
+body {
+    overflow: hidden;
 }

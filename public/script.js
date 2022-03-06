@@ -3,7 +3,7 @@ const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 var startTime, finishTime, wordCount;
-var startGame = 0;
+var startGame = true;
 var correct = 0;
 var incorrect = 0;
 
@@ -16,9 +16,9 @@ input.addEventListener("focus", () => {
 });
 
 input.addEventListener("input", () => {
-    if (startGame === 0) {
+    if (startGame === true) {
         startTimer();
-        startGame++;
+        startGame = false;
     };
 
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
@@ -46,7 +46,7 @@ input.addEventListener("input", () => {
     });
 
     if (isGameDone(quoteSpanArray, inputArray)) {
-        startGame = 0;
+        startGame = true;
         stopTimer();
         wpmDiv.innerText = "Your WPM is: " + getWPM();
         accDiv.innerText = "Your Accuracy Percentage is: %" + (100 * correct / (correct+incorrect)).toFixed(2);

@@ -8,7 +8,6 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const port = 3000;
-const hostname = "localhost";
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -35,6 +34,6 @@ io.on("connection", (socket) => {
     })
 });
 
-server.listen(port, hostname, () => {
+server.listen(port, () => {
     console.log(`Listening at: http://${hostname}:${port}`);
 });

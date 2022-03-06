@@ -3,6 +3,8 @@ const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 var startTime, finishTime, wordCount;
 var startGame = 0;
+var correct = 0;
+var incorrect = 0;
 
 input.addEventListener("blur", () => {
     input.setAttribute("placeholder", "click here to focus");
@@ -28,10 +30,14 @@ input.addEventListener("input", () => {
             charSpan.classList.remove("correct");
             charSpan.classList.remove("incorrect");
         } else if (char === charSpan.innerText) {
+            if (!(charSpan.classList.contains("correct")))
+                correct++;
             charSpan.classList.add("correct");
             charSpan.classList.remove("incorrect");
             charSpan.classList.remove("incomplete");
         } else {
+            if (!(charSpan.classList.contains("incorrect")))
+                incorrect++;
             charSpan.classList.add("incorrect");
             charSpan.classList.remove("correct");
             charSpan.classList.remove("incomplete");
@@ -41,6 +47,9 @@ input.addEventListener("input", () => {
     if (isGameDone(quoteSpanArray, inputArray)) {
         startGame = 0;
         stopTimer();
+        console.log("Your total is:%" + (100 * correct/(correct+incorrect)));
+        correct = 0;
+        incorrect = 0;
         wpmDiv.innerText = "Your WPM is: " + getWPM();
         input.readOnly = true;
     };

@@ -1,4 +1,5 @@
 const wpmDiv = document.getElementById("wpm");
+const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
 var startTime, finishTime, wordCount;
@@ -47,10 +48,10 @@ input.addEventListener("input", () => {
     if (isGameDone(quoteSpanArray, inputArray)) {
         startGame = 0;
         stopTimer();
-        console.log("Your total is:%" + (100 * correct/(correct+incorrect)));
+        wpmDiv.innerText = "Your WPM is: " + getWPM();
+        accDiv.innerText = "Your Accuracy Percentage is: %" + (100 * correct / (correct+incorrect)).toFixed(2);
         correct = 0;
         incorrect = 0;
-        wpmDiv.innerText = "Your WPM is: " + getWPM();
         input.readOnly = true;
     };
 });

@@ -44,3 +44,11 @@ textarea {
 .current {
     text-decoration: underline;
 }
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:hover {
+    background: white; 
+}

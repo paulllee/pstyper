@@ -35,5 +35,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-    console.log(`Listening at: http://${hostname}:${port}`);
+    console.log(`listening at: http://*:${port}`);
 });

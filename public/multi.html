@@ -6,14 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js" defer></script>
+    <script src="multi.js" defer></script>
     <title>pstyper</title>
 </head>
 
-<body onload="updateQuotable()">
-    <!-- TEMP LINK TO TEST FUNCTIONALITY WAITING FOR NAV BAR IMPLEMENTATION -->
-    <a href="multi.html">race your friends (create room)</a>
-
+<body>
     <div class="main-game" id="main-game">
         <div class="wpm" id="wpm"></div>
         <div class="acc" id="acc"></div>

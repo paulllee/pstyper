@@ -20,7 +20,12 @@ input.addEventListener("input", () => {
 
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
-    
+
+    updateGameState(quoteSpanArray, inputArray);
+    updateGameIfDone(quoteSpanArray, inputArray);
+});
+
+function updateGameState(quoteSpanArray, inputArray) {
     quoteSpanArray.forEach((charSpan, index) => {
         const char = inputArray[index];
 
@@ -46,7 +51,9 @@ input.addEventListener("input", () => {
         } else if ((inputArray.length - 1 === index) && (charSpan.classList.contains("incorrect")))
             incorrect++;
     });
+};
 
+function updateGameIfDone(quoteSpanArray, inputArray) {
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
         wpmDiv.innerText = "Your WPM is: " + getWPM();
@@ -54,7 +61,17 @@ input.addEventListener("input", () => {
         incorrect = 0;
         input.readOnly = true;
     };
-});
+};
+
+function isGameDone(qArr, iArr) {
+    let gameOver = true;
+    qArr.forEach((charSpan, index) => {
+        const char = iArr[index];
+        if (!(charSpan.innerText === char)) 
+            gameOver = false;
+    });
+    return gameOver;
+}
 
 function startTimer() {
     if (!timeStarted) {
@@ -67,16 +84,6 @@ function startTimer() {
 function stopTimer() {
     clearInterval(timerId);
     timeStarted = false;
-}
-
-function isGameDone(qArr, iArr) {
-    let gameOver = true;
-    qArr.forEach((charSpan, index) => {
-        const char = iArr[index];
-        if (!(charSpan.innerText === char)) 
-            gameOver = false;
-    });
-    return gameOver;
 }
 
 function getWPM() {

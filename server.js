@@ -14,6 +14,17 @@ app.use(express.json());
 
 const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=150';
 
+app.get("/multi", function(req, res) {
+    let multiId = req.query.id;
+    if (multiId == null)
+        multiId = "new";
+    res.status(200);
+    res.json({
+        "status": 200,
+        "id": multiId
+    });
+});
+
 app.get("/quotable", function(req, res) {
     axios.get(QUOTABLE_API_URL).then(function (response) {
         res.status(200);
@@ -28,8 +39,8 @@ app.get("/quotable", function(req, res) {
 });
 
 io.on("connection", (socket) => {
-    socket.on("create", function(room) {
-        socket.join(room);
+    socket.on("create", function(id) {
+        socket.join(id);
     });
 });
 

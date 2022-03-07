@@ -10,12 +10,14 @@ const io = new Server(server);
 
 const port = 3000;
 
+const game = {};
+
 app.use(express.static("public"));
 app.use(express.json());
 
 const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=150';
 
-app.get("/quotable", function(req, res) {
+app.get("/quotable", function (req, res) {
     axios.get(QUOTABLE_API_URL).then(function (response) {
         res.status(200);
         res.json({"status": 200,
@@ -29,18 +31,21 @@ app.get("/quotable", function(req, res) {
 });
 
 io.on("connection", (socket) => {
-    // socket.on("create", function(name) {
-
-    //     console.log("user created room " + name);
-    // });
-    // socket.on("join", function(name) {
-    //     if (io.sockets.adapter.rooms.get(name) === undefined) {
-    //         console.log("INVALID ID");
-    //     } else {
-    //         socket.join(name);
-    //         console.log("user joined room " + name);
-    //     }
-    // });
+    socket.on("create", function(id, quote, charLen) {
+        socket.join(id);
+        console.log("user created room " + id);
+        game[id] = [quote, charLen];
+        console.log(game);
+    });
+    socket.on("join", function(id) {
+        socket.join(id);
+        if (game[id] === undefined) {
+            socket.emit("join-quotable", "", "", true);
+        } else {
+            socket.emit("join-quotable", game[id][0], game[id][1], false);
+            console.log("user joined room " + id);
+        }
+    });
 });
 
 server.listen(port, () => {

@@ -44,6 +44,11 @@ io.on("connection", (socket) => {
             console.log("user joined room " + id);
         };
     });
+    socket.on("start", function (id, cb) {
+        console.log(io.sockets.adapter.rooms);
+        socket.to(id).emit("receive-start");
+        cb();
+    });
 });
 
 server.listen(port, () => {

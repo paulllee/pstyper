@@ -1,19 +1,28 @@
 const socket = io();
 const buttonDiv = document.getElementById("button-container");
+const timerDiv = document.getElementById("timer");
+var room;
 
 socket.on("connect", () => {
-    let id = window.location.search.substring(4).toString();
+    let id = window.location.search.substring(4);
+
 
     if (id === "") {
-        createQuotable(socket.id);
+        id = generateId();
+        room = id;
+        createQuotable(id);
         createStartButton();
     } else {
         socket.emit("join", id);
     }
-});
 
-socket.on("join-quotable", (quote, charLen, error) => {
-    joinQuotable(quote, charLen, error);
+    socket.on("join-quotable", (quote, charLen, error) => {
+        joinQuotable(quote, charLen, error);
+    });
+    
+    socket.on("receive-start", () => {
+        startGame();
+    });
 });
 
 input.addEventListener("blur", () => {
@@ -37,6 +46,39 @@ function createStartButton() {
     button.setAttribute("id", "start");
     button.innerText = "start game!";
     buttonDiv.append(button);
+    const startButton = document.getElementById("start");
+    startButton.addEventListener("click", () => {
+        buttonDiv.innerText = "";
+        socket.emit("start", room, () => {
+            startGame();
+        });
+    });
+};
+
+function startGame() {
+    timer();
+}
+
+function timer() {
+    let seconds = 10;
+    let interval = setInterval(function() {
+        timerDiv.innerHTML = seconds-- + "s ";
+  
+        if (seconds < 0) {
+            clearInterval(interval);
+            timerDiv.innerHTML = "";
+        }
+    }, 1000);
+}
+
+function generateId() {
+    let id = "";
+    let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  
+    for(let i = 0; i < 8; i++){
+        id += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    }
+    return id;
 }
 
 function createQuotable(id) {

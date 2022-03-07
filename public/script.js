@@ -93,9 +93,9 @@ function soloQuotable() {
         headers: {
             "Content-Type": "application/json",
         }
-    }).then(function(response) {
+    }).then(function (response) {
         return response.json();
-    }).then(function(data) {
+    }).then(function (data) {
         if (data.status === 200) {
             const quote = data.content;
             charLength = data.len;

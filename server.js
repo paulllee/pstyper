@@ -1,5 +1,6 @@
 const axios = require("axios");
 const express = require("express");
+const res = require("express/lib/response");
 const app = express();
 
 const http = require('http');
@@ -13,17 +14,6 @@ app.use(express.static("public"));
 app.use(express.json());
 
 const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=150';
-
-app.get("/multi", function(req, res) {
-    let multiId = req.query.id;
-    if (multiId == null)
-        multiId = "new";
-    res.status(200);
-    res.json({
-        "status": 200,
-        "id": multiId
-    });
-});
 
 app.get("/quotable", function(req, res) {
     axios.get(QUOTABLE_API_URL).then(function (response) {
@@ -41,7 +31,16 @@ app.get("/quotable", function(req, res) {
 io.on("connection", (socket) => {
     socket.on("create", function(id) {
         socket.join(id);
+        console.log("user created room " + id);
     });
+    socket.on("join", function(id) {
+        if (io.sockets.adapter.rooms.get(id) === undefined) {
+            console.log("INVALID ID");
+        } else {
+            socket.join(id);
+            console.log("user joined room " + id);
+        }
+    })
 });
 
 server.listen(port, () => {

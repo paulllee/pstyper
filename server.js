@@ -21,7 +21,6 @@ app.get("/quotable", function (req, res) {
         res.status(200);
         res.json({"status": 200,
         "content": response.data.content,
-        "author": response.data.author,
         "len": response.data.length});
     }).catch(function () {
         res.status(400);
@@ -33,21 +32,25 @@ io.on("connection", (socket) => {
     socket.on("create", function (id, quote, charLen) {
         socket.join(id);
         console.log("user created room " + id);
-        game[id] = [quote, charLen];
+        game[id] = {"quote": quote, 
+        "charLen": charLen,
+        "inProgress": false};
     });
     socket.on("join", function (id) {
-        socket.join(id);
         if (game[id] === undefined) {
-            socket.emit("join-quotable", "", "", true);
+            socket.emit("join-quotable", "", true);
+        } else if (game[id].inProgress) {
+            socket.emit("join-quotable", game[id], false);
         } else {
-            socket.emit("join-quotable", game[id][0], game[id][1], false);
+            socket.join(id);
+            socket.emit("join-quotable", game[id], false);
             console.log("user joined room " + id);
         };
     });
-    socket.on("start", function (id, cb) {
-        console.log(io.sockets.adapter.rooms);
+    socket.on("start", function (id, verified) {
+        game[id].inProgress = true;
         socket.to(id).emit("receive-start");
-        cb();
+        verified();
     });
 });
 

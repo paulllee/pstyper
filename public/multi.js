@@ -1,27 +1,25 @@
 const socket = io();
 const buttonDiv = document.getElementById("button-container");
 const timerDiv = document.getElementById("timer");
-var room;
+var id;
 
 socket.on("connect", () => {
-    let id = window.location.search.substring(4);
+    let queryId = window.location.search.substring(4);
 
-
-    if (id === "") {
+    if (queryId === "") {
         id = generateId();
-        room = id;
         createQuotable(id);
         createStartButton();
     } else {
-        socket.emit("join", id);
+        socket.emit("join", queryId);
     }
 
-    socket.on("join-quotable", (quote, charLen, error) => {
-        joinQuotable(quote, charLen, error);
+    socket.on("join-quotable", (game, error) => {
+        joinQuotable(game, error);
     });
     
     socket.on("receive-start", () => {
-        startGame();
+        startCountdown();
     });
 });
 
@@ -49,39 +47,53 @@ function createStartButton() {
     const startButton = document.getElementById("start");
     startButton.addEventListener("click", () => {
         buttonDiv.innerText = "";
-        socket.emit("start", room, () => {
-            startGame();
+        socket.emit("start", id, () => {
+            startCountdown();
         });
     });
 };
 
 function startGame() {
-    timer();
+    input.readOnly = false;
+    input.focus();
+    
+    input.setAttribute("placeholder", "start typing...");
+
+    input.addEventListener("blur", () => {
+        input.setAttribute("placeholder", "click here to focus");
+    });
+    
+    input.addEventListener("focus", () => {
+        input.setAttribute("placeholder", "start typing...");
+    });
+
+    startTimer();
 }
 
-function timer() {
-    let seconds = 10;
-    let interval = setInterval(function() {
-        timerDiv.innerHTML = seconds-- + "s ";
+function startCountdown() {
+    let timer = 10;
+    let timerId = setInterval(function() {
+        timerDiv.innerText = timer--;
   
-        if (seconds < 0) {
-            clearInterval(interval);
-            timerDiv.innerHTML = "";
+        if (timer < 0) {
+            clearInterval(timerId);
+            timerDiv.innerText = "";
+            startGame();
         }
     }, 1000);
 }
 
 function generateId() {
-    let id = "";
+    let newId = "";
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   
     for(let i = 0; i < 8; i++){
-        id += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        newId += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     }
-    return id;
+    return newId;
 }
 
-function createQuotable(id) {
+function createQuotable() {
     fetch("/quotable", {
         method: "GET",
         headers: {
@@ -114,15 +126,20 @@ function createQuotable(id) {
     });
 };
 
-function joinQuotable(quote, charLen, error) {
-    charLength = charLen;
+function joinQuotable(game, error) {
     quoteDiv.innerText = "";
 
     if (error) {
-        quoteDiv.innerText = "ERROR: ROOM DOESN'T EXIST. Please go back to the home page.";
+        quoteDiv.innerText = "ERROR: RACE ID DOESN'T EXIST. Please go back to the home page.";
+        quoteDiv.style.color = "red";
+        input.style.display = "none";
+    } else if (game.inProgress) {
+        quoteDiv.innerText = "RACE IS IN PROGRESS. Please go back to the home page.";
         quoteDiv.style.color = "red";
         input.style.display = "none";
     } else {
+        charLength = game.charLen;
+        let quote = game.quote;
         quote.split("").forEach(char => {
             const charSpan = document.createElement("span");
             charSpan.classList.add("incomplete");

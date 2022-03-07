@@ -2,10 +2,10 @@ const wpmDiv = document.getElementById("wpm");
 const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
-var startTime, finishTime, charLength;
-var startGame = true;
+var time, timerId, charLength;
 var firstLetter = true;
 var incorrect = 0;
+var timeStarted = false;
 
 input.addEventListener("blur", () => {
     input.setAttribute("placeholder", "click here to focus");
@@ -16,10 +16,7 @@ input.addEventListener("focus", () => {
 });
 
 input.addEventListener("input", () => {
-    if (startGame === true) {
-        startTimer();
-        startGame = false;
-    };
+    startTimer();
 
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
@@ -51,7 +48,6 @@ input.addEventListener("input", () => {
     });
 
     if (isGameDone(quoteSpanArray, inputArray)) {
-        startGame = true;
         stopTimer();
         wpmDiv.innerText = "Your WPM is: " + getWPM();
         accDiv.innerText = "Your Accuracy Percentage is: " + (100 * charLength / (charLength + incorrect)).toFixed(2) + "%";
@@ -61,15 +57,16 @@ input.addEventListener("input", () => {
 });
 
 function startTimer() {
-    startTime = new Date();
+    if (!timeStarted) {
+        time = 0;
+        timerId = setInterval(function() {time++;}, 1000);
+        timeStarted = true;
+    }
 }
 
 function stopTimer() {
-    finishTime = new Date();
-}
-
-function getTime() {
-    return (finishTime - startTime)/1000;
+    clearInterval(timerId);
+    timeStarted = false;
 }
 
 function isGameDone(qArr, iArr) {
@@ -83,7 +80,7 @@ function isGameDone(qArr, iArr) {
 }
 
 function getWPM() {
-    let cpm = charLength / (getTime() / 60);
+    let cpm = charLength / (time / 60);
     return Math.floor(cpm / 5);
 }
 

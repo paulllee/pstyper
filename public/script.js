@@ -87,7 +87,7 @@ function getWPM() {
     return Math.floor(cpm / 5);
 }
 
-function updateQuotable() {
+function soloQuotable() {
     fetch("/quotable", {
         method: "GET",
         headers: {

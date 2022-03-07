@@ -29,18 +29,18 @@ app.get("/quotable", function(req, res) {
 });
 
 io.on("connection", (socket) => {
-    socket.on("create", function(id) {
-        socket.join(id);
-        console.log("user created room " + id);
-    });
-    socket.on("join", function(id) {
-        if (io.sockets.adapter.rooms.get(id) === undefined) {
-            console.log("INVALID ID");
-        } else {
-            socket.join(id);
-            console.log("user joined room " + id);
-        }
-    })
+    // socket.on("create", function(name) {
+
+    //     console.log("user created room " + name);
+    // });
+    // socket.on("join", function(name) {
+    //     if (io.sockets.adapter.rooms.get(name) === undefined) {
+    //         console.log("INVALID ID");
+    //     } else {
+    //         socket.join(name);
+    //         console.log("user joined room " + name);
+    //     }
+    // });
 });
 
 server.listen(port, () => {

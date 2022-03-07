@@ -1,6 +1,5 @@
 const axios = require("axios");
 const express = require("express");
-const res = require("express/lib/response");
 const app = express();
 
 const http = require('http');
@@ -31,20 +30,22 @@ app.get("/quotable", function (req, res) {
 });
 
 io.on("connection", (socket) => {
-    socket.on("create", function(id, quote, charLen) {
+    socket.on("create", function (id, quote, charLen) {
         socket.join(id);
         console.log("user created room " + id);
         game[id] = [quote, charLen];
-        console.log(game);
     });
-    socket.on("join", function(id) {
+    socket.on("join", function (id) {
         socket.join(id);
         if (game[id] === undefined) {
             socket.emit("join-quotable", "", "", true);
         } else {
             socket.emit("join-quotable", game[id][0], game[id][1], false);
             console.log("user joined room " + id);
-        }
+        };
+    });
+    socket.on("game-ended", function (id) {
+        delete game[id];
     });
 });
 

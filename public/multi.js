@@ -12,7 +12,21 @@ socket.on("connect", () => {
 
 socket.on("join-quotable", (quote, charLen, error) => {
     joinQuotable(quote, charLen, error);
-    console.log("HI");
+});
+
+// input.addEventListener("blur", () => {
+//     input.setAttribute("placeholder", "waiting for players...");
+// });
+
+// input.addEventListener("focus", () => {
+//     input.setAttribute("placeholder", "waiting for players...");
+// });
+
+input.addEventListener("input", () => {
+    const inputArray = input.value.split("");
+    if (inputArray.length % 5 === 0) {
+        // broadcast other users the progress
+    }
 });
 
 function createQuotable(id) {
@@ -27,9 +41,7 @@ function createQuotable(id) {
         if (data.status === 200) {
             const quote = data.content;
             charLength = data.len;
-
             socket.emit("create", id, quote, charLength);
-
             quoteDiv.innerText = "";
             quote.split("").forEach(char => {
                 const charSpan = document.createElement("span");
@@ -41,6 +53,7 @@ function createQuotable(id) {
                 quoteDiv.append(charSpan);
             });
             input.value = null;
+            input.readOnly = true;
             firstLetter = true;
         } else {
             quoteDiv.innerText = "ERROR: Cannot connect to Quotable API. Please REFRESH the page.";
@@ -68,6 +81,7 @@ function joinQuotable(quote, charLen, error) {
             quoteDiv.append(charSpan);
         });
         input.value = null;
+        input.readOnly = true;
         firstLetter = true;
     };
 };

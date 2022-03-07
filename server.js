@@ -44,9 +44,6 @@ io.on("connection", (socket) => {
             console.log("user joined room " + id);
         };
     });
-    socket.on("game-ended", function (id) {
-        delete game[id];
-    });
 });
 
 server.listen(port, () => {

@@ -1,10 +1,12 @@
 const socket = io();
+const buttonDiv = document.getElementById("button-container");
 
 socket.on("connect", () => {
     let id = window.location.search.substring(4).toString();
 
     if (id === "") {
         createQuotable(socket.id);
+        createStartButton();
     } else {
         socket.emit("join", id);
     }
@@ -14,13 +16,13 @@ socket.on("join-quotable", (quote, charLen, error) => {
     joinQuotable(quote, charLen, error);
 });
 
-// input.addEventListener("blur", () => {
-//     input.setAttribute("placeholder", "waiting for players...");
-// });
+input.addEventListener("blur", () => {
+    input.setAttribute("placeholder", "waiting for players...");
+});
 
-// input.addEventListener("focus", () => {
-//     input.setAttribute("placeholder", "waiting for players...");
-// });
+input.addEventListener("focus", () => {
+    input.setAttribute("placeholder", "waiting for players...");
+});
 
 input.addEventListener("input", () => {
     const inputArray = input.value.split("");
@@ -28,6 +30,14 @@ input.addEventListener("input", () => {
         // broadcast other users the progress
     }
 });
+
+function createStartButton() {
+    let button = document.createElement("button");
+    button.classList.add("start");
+    button.setAttribute("id", "start");
+    button.innerText = "start game!";
+    buttonDiv.append(button);
+}
 
 function createQuotable(id) {
     fetch("/quotable", {

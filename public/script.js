@@ -2,11 +2,13 @@ const wpmDiv = document.getElementById("wpm");
 const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
+const button = document.getElementById("multi");
 var startTime, finishTime, charLength;
 var startGame = true;
 var firstLetter = true;
 var incorrect = 0;
 var socket = io();
+var multiId;
 
 input.addEventListener("blur", () => {
     input.setAttribute("placeholder", "click here to focus");
@@ -59,6 +61,11 @@ input.addEventListener("input", () => {
         incorrect = 0;
         input.readOnly = true;
     };
+});
+
+button.addEventListener("click", () => {
+    multiId = crypto.randomUUID();
+    socket.emit("create", multiId);
 });
 
 function startTimer() {

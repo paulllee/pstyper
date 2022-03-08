@@ -29,36 +29,37 @@ app.get("/quotable", function (req, res) {
 });
 
 io.on("connection", (socket) => {
-    socket.on("create", function (raceId, userId, quote, charLen) {
-        socket.join(raceId);
-        console.log("user created room " + raceId);
-        game[raceId] = {"quote": quote, 
+    socket.on("create", function (lobbyId, userId, quote, charLen) {
+        socket.join(lobbyId);
+        console.log("user created room " + lobbyId);
+        game[lobbyId] = {"quote": quote, 
         "charLen": charLen,
         "inProgress": false,
         "players": {}};
-        game[raceId].players[userId] = {"progress": 0, "wpm": 0}; 
+        game[lobbyId].players[userId] = {"progress": 0, "wpm": 0}; 
     });
-    socket.on("join", function (raceId, userId) {
-        if (game[raceId] === undefined) {
+    socket.on("join", function (lobbyId, userId) {
+        if (game[lobbyId] === undefined) {
             socket.emit("join-quotable", "", true);
-        } else if (game[raceId].inProgress) {
-            socket.emit("join-quotable", game[raceId], false);
+        } else if (game[lobbyId].inProgress) {
+            socket.emit("join-quotable", game[lobbyId], false);
         } else {
-            game[raceId].players[userId] = {"progress": 0, "wpm": 0};
-            socket.join(raceId);
-            socket.emit("join-quotable", game[raceId], false);
-            console.log("user joined room " + raceId);
+            game[lobbyId].players[userId] = {"progress": 0, "wpm": 0};
+            socket.join(lobbyId);
+            socket.emit("join-quotable", game[lobbyId], false);
+            console.log("user joined room " + lobbyId);
         };
     });
-    socket.on("start", function (raceId, callback) {
-        game[raceId].inProgress = true;
-        socket.to(raceId).emit("receive-start");
+    socket.on("start", function (lobbyId, callback) {
+        game[lobbyId].inProgress = true;
+        socket.to(lobbyId).emit("receive-start");
         callback();
     });
-    socket.on("send", function (raceId, userId, userData) {
-        game[raceId].players[userId].progress = userData.progress;
-        game[raceId].players[userId].wpm = userData.wpm;
-        socket.to(raceId).emit("receive", game[raceId]);
+    socket.on("send", function (lobbyId, userId, userData, callback) {
+        game[lobbyId].players[userId].progress = userData.progress;
+        game[lobbyId].players[userId].wpm = userData.wpm;
+        socket.to(lobbyId).emit("receive", game[lobbyId]);
+        callback(game[lobbyId]);
     });
 });
 

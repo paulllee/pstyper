@@ -1,21 +1,21 @@
 const socket = io();
 const buttonDiv = document.getElementById("button-container");
 const timerDiv = document.getElementById("timer");
-const scoreboardDiv = document.getElementById("scoreboard");
+const scoreboard = document.getElementById("scoreboard");
 var charNum = 0;
-var raceId, userId;
+var lobbyId, userId;
 
 socket.on("connect", () => {
     userId = socket.id;
     let queryId = window.location.search.substring(4);
 
     if (queryId === "") {
-        raceId = generateId();
+        lobbyId = generateId();
         createMultiplayerQuotable();
         createStartButton();
     } else {
-        raceId = queryId;
-        socket.emit("join", raceId, userId);
+        lobbyId = queryId;
+        socket.emit("join", lobbyId, userId);
     }
 
     socket.on("join-quotable", (game, error) => {
@@ -27,26 +27,11 @@ socket.on("connect", () => {
     });
 
     socket.on("receive", (game) => {
-        console.log(game);
+        updateScoreboard(game);
     });
 });
 
 replacePlaceholderInputEventListener("waiting for players...", "waiting for players...");
-
-function createStartButton() {
-    let button = document.createElement("button");
-    button.classList.add("start");
-    button.setAttribute("id", "start");
-    button.innerText = "start game!";
-    buttonDiv.append(button);
-    const startButton = document.getElementById("start");
-    startButton.addEventListener("click", () => {
-        buttonDiv.innerText = "";
-        socket.emit("start", raceId, () => {
-            startCountdown();
-        });
-    });
-};
 
 function startGame() {
     input.readOnly = false;
@@ -94,13 +79,17 @@ function updateMultiplayerGameState() {
         let curProgress = Math.floor((inputArray.length / charLength) * 100);
         let curWpm = getWpm();
         let userData = {"progress": curProgress, "wpm": curWpm};
-        socket.emit("send", raceId, userId, userData);
+        socket.emit("send", lobbyId, userId, userData, (game) => {
+            updateScoreboard(game);
+        });
     }
 
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
         let userData = {"progress": 100, "wpm": getWpm()};
-        socket.emit("send", raceId, userId, userData);
+        socket.emit("send", lobbyId, userId, userData, (game) => {
+            updateScoreboard(game);
+        });
         wpmDiv.innerText = "Your WPM is: " + getWpm();
         accDiv.innerText = "Your Accuracy Percentage is: " + (100 * charLength / (charLength + incorrect)).toFixed(2) + "%";
         incorrect = 0;
@@ -108,9 +97,26 @@ function updateMultiplayerGameState() {
     };
 };
 
+function createStartButton() {
+    let button = document.createElement("button");
+    button.classList.add("start");
+    button.setAttribute("id", "start");
+    button.innerText = "start game!";
+    buttonDiv.append(button);
+    const startButton = document.getElementById("start");
+    startButton.addEventListener("click", () => {
+        buttonDiv.innerText = "";
+        socket.emit("start", lobbyId, () => {
+            startCountdown();
+        });
+    });
+};
+
 function startCountdown() {
     let initialUserData = {"progress": 0, "wpm": 0};
-    socket.emit("send", raceId, userId, initialUserData);
+    socket.emit("send", lobbyId, userId, initialUserData, (game) => {
+        updateScoreboard(game);
+    });
     replacePlaceholderInputEventListener("countdown has begun...", "countdown has begun...");
     
     let timer = 11;
@@ -137,6 +143,21 @@ function generateId() {
     return newId;
 };
 
+function updateScoreboard(game) {
+    scoreboard.innerText = "";
+
+    for (let [userId, data] of Object.entries(game.players)) {
+        let row = document.createElement("tr");
+        let name = document.createElement("td");
+        let progress = document.createElement("td");
+        name.innerText = userId;
+        progress.innerText = data.progress + "% completed";
+        row.append(name);
+        row.append(progress);
+        scoreboard.append(row);
+    }
+}
+
 function createMultiplayerQuotable() {
     fetch("/quotable", {
         method: "GET",
@@ -149,7 +170,7 @@ function createMultiplayerQuotable() {
         if (data.status === 200) {
             const quote = data.content;
             charLength = data.len;
-            socket.emit("create", raceId, userId, quote, charLength);
+            socket.emit("create", lobbyId, userId, quote, charLength);
             quoteDiv.innerText = "";
             quote.split("").forEach(char => {
                 const charSpan = document.createElement("span");
@@ -174,11 +195,11 @@ function joinMultiplayerQuotable(game, error) {
     quoteDiv.innerText = "";
 
     if (error) {
-        quoteDiv.innerText = "ERROR: RACE ID DOESN'T EXIST. Please go back to the home page.";
+        quoteDiv.innerText = "ERROR: LOBBY ID DOESN'T EXIST. Please go back to the home page.";
         quoteDiv.style.color = "red";
         input.style.display = "none";
     } else if (game.inProgress) {
-        quoteDiv.innerText = "RACE IS IN PROGRESS. Please go back to the home page.";
+        quoteDiv.innerText = "LOBBY'S RACE HAS STARTED. Please go back to the home page.";
         quoteDiv.style.color = "red";
         input.style.display = "none";
     } else {

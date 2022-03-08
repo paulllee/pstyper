@@ -109,6 +109,9 @@ function createStartButton() {
 };
 
 function startCountdown() {
+    linkDescDiv.innerText = "";
+    linkDiv.innerText = "";
+
     let initialUserData = {"progress": 0, "wpm": 0, "accuracy": 100};
     socket.emit("send-data", lobbyId, userId, initialUserData, (game) => {
         updateMultiplayerScoreboard(game);

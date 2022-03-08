@@ -2,6 +2,7 @@ const wpmDiv = document.getElementById("wpm");
 const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
+const scoreboard = document.getElementById("scoreboard");
 var time, timerId, charLength;
 var firstLetter = true;
 var incorrect = 0;
@@ -69,12 +70,26 @@ function updateCharacters(quoteSpanArray, inputArray) {
 function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
-        wpmDiv.innerText = "Your WPM is: " + getWpm();
-        accDiv.innerText = "Your Accuracy Percentage is: " + getAccuracy() + "%";
+        let data = {"wpm": getWpm(), "accuracy": getAccuracy()};
+        updateSingleplayerScoreboard(data);
         incorrect = 0;
         input.readOnly = true;
     };
 };
+
+function updateSingleplayerScoreboard(data) {
+    scoreboard.innerText = "";
+
+    let row = document.createElement("tr");
+    let wpm = document.createElement("td");
+    let accuracy = document.createElement("td");
+    wpm.innerText = data.wpm + " wpm";
+    accuracy.innerText = data.accuracy + "% accurate";
+    row.append(wpm);
+    row.append(accuracy);
+
+    scoreboard.append(row);
+}
 
 function isGameDone(qArr, iArr) {
     let gameOver = true;

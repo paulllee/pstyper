@@ -1,7 +1,6 @@
 const socket = io();
 const buttonDiv = document.getElementById("button-container");
 const timerDiv = document.getElementById("timer");
-const scoreboard = document.getElementById("scoreboard");
 var charNum = 0;
 var lobbyId, userId;
 var winner = null;

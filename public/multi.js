@@ -4,8 +4,8 @@ const timerDiv = document.getElementById("timer");
 var charNum = 0;
 var lobbyId, userId;
 var winner = null;
-var activePlayerNum = 1;
-var lobbyString = "waiting for players... (" + activePlayerNum + " player(s) active)";
+var activePlayerNum = 0;
+var lobbyString = "waiting for players... (" + ++activePlayerNum + " player(s) active)";
 
 socket.on("connect", () => {
     userId = socket.id;
@@ -14,7 +14,7 @@ socket.on("connect", () => {
     if (queryId === "") {
         lobbyId = generateId();
         scoreboard.innerText = "invite your friends with this link: http://*/multi.html?id=" + lobbyId;
-        
+
         input.setAttribute("placeholder", lobbyString);
         input.addEventListener("blur", () => {input.setAttribute("placeholder", lobbyString)});
         input.addEventListener("focus", () => {input.setAttribute("placeholder", lobbyString)});
@@ -111,7 +111,7 @@ function startCountdown() {
     input.addEventListener("focus", () => {input.setAttribute("placeholder", "countdown has begun")});
     
     let timer = 11;
-    let timerId = setInterval(function() {
+    let timerId = setInterval(() => {
         timerDiv.innerText = --timer;
         if (timer < 0) {
             clearInterval(timerId);
@@ -165,9 +165,9 @@ function createMultiplayerQuotable() {
         headers: {
             "Content-Type": "application/json",
         }
-    }).then(function(response) {
+    }).then((response) => {
         return response.json();
-    }).then(function(data) {
+    }).then((data) => {
         if (data.status === 200) {
             const quote = data.content;
             charLength = data.len;

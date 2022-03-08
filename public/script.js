@@ -88,7 +88,7 @@ function isGameDone(qArr, iArr) {
 function startTimer() {
     if (!timeStarted) {
         time = 0;
-        timerId = setInterval(function() {time++;}, 1000);
+        timerId = setInterval(() => {time++;}, 1000);
         timeStarted = true;
     }
 };
@@ -113,9 +113,9 @@ function singleplayerQuotable() {
         headers: {
             "Content-Type": "application/json",
         }
-    }).then(function (response) {
+    }).then((response) => {
         return response.json();
-    }).then(function (data) {
+    }).then((data) => {
         if (data.status === 200) {
             const quote = data.content;
             charLength = data.len;

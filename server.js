@@ -16,20 +16,20 @@ app.use(express.json());
 
 const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=150';
 
-app.get("/quotable", function (req, res) {
-    axios.get(QUOTABLE_API_URL).then(function (response) {
+app.get("/quotable", (req, res) => {
+    axios.get(QUOTABLE_API_URL).then((response) => {
         res.status(200);
         res.json({"status": 200,
         "content": response.data.content,
         "len": response.data.length});
-    }).catch(function () {
+    }).catch(() => {
         res.status(400);
         res.json({"status": 400});
     });
 });
 
 io.on("connection", (socket) => {
-    socket.on("create", function (lobbyId, userId, quote, charLen) {
+    socket.on("create", (lobbyId, userId, quote, charLen) => {
         socket.join(lobbyId);
         console.log("user created room " + lobbyId);
         game[lobbyId] = {"quote": quote, 
@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
         "players": {}};
         game[lobbyId].players[userId] = {"progress": 0, "wpm": 0, "accuracy": 100}; 
     });
-    socket.on("join", function (lobbyId, userId) {
+    socket.on("join", (lobbyId, userId) => {
         if (game[lobbyId] === undefined) {
             socket.emit("join-quotable", "", true);
         } else if (game[lobbyId].inProgress) {
@@ -50,12 +50,12 @@ io.on("connection", (socket) => {
             console.log("user joined room " + lobbyId);
         };
     });
-    socket.on("start", function (lobbyId, callback) {
+    socket.on("start", (lobbyId, callback) => {
         game[lobbyId].inProgress = true;
         socket.to(lobbyId).emit("receive-start");
         callback();
     });
-    socket.on("send", function (lobbyId, userId, userData, callback) {
+    socket.on("send", (lobbyId, userId, userData, callback) => {
         game[lobbyId].players[userId].progress = userData.progress;
         game[lobbyId].players[userId].wpm = userData.wpm;
         game[lobbyId].players[userId].accuracy = userData.accuracy;

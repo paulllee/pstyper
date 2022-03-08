@@ -8,25 +8,9 @@ var firstLetter = true;
 var incorrect = 0;
 var timeStarted = false;
 
-function setInputPlaceholder(message) {
-    input.setAttribute("placeholder", message);
-};
-
-function removePlaceholderInputEventListener() {
-    input.removeEventListener("blur", setInputPlaceholder);
-    input.removeEventListener("focus", setInputPlaceholder);
-};
-
-input.addEventListener("blur", setInputPlaceholder("click here to focus"));
-input.addEventListener("focus", setInputPlaceholder("start typing..."));
-
-function replacePlaceholderInputEventListener(blurText, FocusText) {
-    input.setAttribute("placeholder", FocusText);
-    removePlaceholderInputEventListener();
-    input.addEventListener("blur", setInputPlaceholder(blurText));
-    input.addEventListener("focus", setInputPlaceholder(FocusText));
-};
-
+input.setAttribute("placeholder", "start typing...");
+input.addEventListener("blur", () => {input.setAttribute("placeholder", "click here to focus")});
+input.addEventListener("focus", () => {input.setAttribute("placeholder", "start typing...")});
 input.addEventListener("input", updateSingleplayerGameState);
 
 function updateSingleplayerGameState() {

@@ -9,7 +9,6 @@
     font-size: 20px;
     margin-left: 15%;
     margin-right: 15%;
-    user-select: none;
 }
 
 .textarea {
@@ -27,6 +26,7 @@ textarea {
 
 .quote {
     margin-top: 15px;
+    user-select: none;
 }
 
 .incomplete {

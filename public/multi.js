@@ -4,6 +4,8 @@ const timerDiv = document.getElementById("timer");
 var charNum = 0;
 var lobbyId, userId;
 var winner = null;
+var activePlayerNum = 1;
+var lobbyString = "waiting for players... (" + activePlayerNum + " player(s) active)";
 
 socket.on("connect", () => {
     userId = socket.id;
@@ -11,6 +13,12 @@ socket.on("connect", () => {
 
     if (queryId === "") {
         lobbyId = generateId();
+        scoreboard.innerText = "invite your friends with this link: http://*/multi.html?id=" + lobbyId;
+        
+        input.setAttribute("placeholder", lobbyString);
+        input.addEventListener("blur", () => {input.setAttribute("placeholder", lobbyString)});
+        input.addEventListener("focus", () => {input.setAttribute("placeholder", lobbyString)});
+
         createMultiplayerQuotable();
         createStartButton();
     } else {
@@ -31,13 +39,14 @@ socket.on("connect", () => {
     });
 });
 
-removePlaceholderInputEventListener();
-
 function startGame() {
     input.readOnly = false;
-    input.focus();
-    
-    replacePlaceholderInputEventListener("click here to focus", "start typing...");
+
+    input.setAttribute("placeholder", "click here to focus");
+    input.addEventListener("blur", () => {input.setAttribute("placeholder", "click here to focus")});
+    input.addEventListener("focus", () => {input.setAttribute("placeholder", "start typing...")});
+
+    input.focus(); 
     
     input.removeEventListener("input", updateSingleplayerGameState);
     input.addEventListener("input", updateMultiplayerGameState);
@@ -97,15 +106,14 @@ function startCountdown() {
         updateMultiplayerScoreboard(game);
     });
     
-    removePlaceholderInputEventListener();
-    setInputPlaceholder("countdown has begun...");
+    input.setAttribute("placeholder", "countdown has begun");
+    input.addEventListener("blur", () => {input.setAttribute("placeholder", "countdown has begun")});
+    input.addEventListener("focus", () => {input.setAttribute("placeholder", "countdown has begun")});
     
     let timer = 11;
     let timerId = setInterval(function() {
         timerDiv.innerText = --timer;
-        if (timer === 5) {
-            setInputPlaceholder("get ready...");
-        } else if (timer < 0) {
+        if (timer < 0) {
             clearInterval(timerId);
             timerDiv.innerText = "";
             startGame();

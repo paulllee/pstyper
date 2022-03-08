@@ -7,25 +7,31 @@ var firstLetter = true;
 var incorrect = 0;
 var timeStarted = false;
 
-input.addEventListener("blur", () => {
-    input.setAttribute("placeholder", "click here to focus");
-});
+function setInputPlaceholder(message) {
+    input.setAttribute("placeholder", message);
+}
 
-input.addEventListener("focus", () => {
-    input.setAttribute("placeholder", "start typing...");
-});
+input.addEventListener("blur", setInputPlaceholder("click here to focus"));
+input.addEventListener("focus", setInputPlaceholder("start typing..."));
 
-input.addEventListener("input", () => {
+function replacePlaceholderInputEventListener(blurText, FocusText) {
+    input.setAttribute("placeholder", FocusText);
+
+    input.removeEventListener("blur", setInputPlaceholder);
+    input.removeEventListener("focus", setInputPlaceholder);
+
+    input.addEventListener("blur", setInputPlaceholder(blurText));
+    input.addEventListener("focus", setInputPlaceholder(FocusText));
+};
+
+input.addEventListener("input", updateSingleplayerGameState);
+
+function updateSingleplayerGameState() {
     startTimer();
 
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
 
-    updateGameState(quoteSpanArray, inputArray);
-    updateGameIfDone(quoteSpanArray, inputArray);
-});
-
-function updateGameState(quoteSpanArray, inputArray) {
     quoteSpanArray.forEach((charSpan, index) => {
         const char = inputArray[index];
 
@@ -51,12 +57,10 @@ function updateGameState(quoteSpanArray, inputArray) {
         } else if ((inputArray.length - 1 === index) && (charSpan.classList.contains("incorrect")))
             incorrect++;
     });
-};
 
-function updateGameIfDone(quoteSpanArray, inputArray) {
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
-        wpmDiv.innerText = "Your WPM is: " + getWPM();
+        wpmDiv.innerText = "Your WPM is: " + getWpm();
         accDiv.innerText = "Your Accuracy Percentage is: " + (100 * charLength / (charLength + incorrect)).toFixed(2) + "%";
         incorrect = 0;
         input.readOnly = true;
@@ -86,12 +90,12 @@ function stopTimer() {
     timeStarted = false;
 }
 
-function getWPM() {
+function getWpm() {
     let cpm = charLength / (time / 60);
     return Math.floor(cpm / 5);
 }
 
-function soloQuotable() {
+function singleplayerQuotable() {
     fetch("/quotable", {
         method: "GET",
         headers: {

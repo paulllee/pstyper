@@ -29,28 +29,36 @@ app.get("/quotable", function (req, res) {
 });
 
 io.on("connection", (socket) => {
-    socket.on("create", function (id, quote, charLen) {
-        socket.join(id);
-        console.log("user created room " + id);
-        game[id] = {"quote": quote, 
+    socket.on("create", function (raceId, userId, quote, charLen) {
+        socket.join(raceId);
+        console.log("user created room " + raceId);
+        game[raceId] = {"quote": quote, 
         "charLen": charLen,
-        "inProgress": false};
+        "inProgress": false,
+        "players": {}};
+        game[raceId].players[userId] = {"progress": 0, "wpm": 0}; 
     });
-    socket.on("join", function (id) {
-        if (game[id] === undefined) {
+    socket.on("join", function (raceId, userId) {
+        if (game[raceId] === undefined) {
             socket.emit("join-quotable", "", true);
-        } else if (game[id].inProgress) {
-            socket.emit("join-quotable", game[id], false);
+        } else if (game[raceId].inProgress) {
+            socket.emit("join-quotable", game[raceId], false);
         } else {
-            socket.join(id);
-            socket.emit("join-quotable", game[id], false);
-            console.log("user joined room " + id);
+            game[raceId].players[userId] = {"progress": 0, "wpm": 0};
+            socket.join(raceId);
+            socket.emit("join-quotable", game[raceId], false);
+            console.log("user joined room " + raceId);
         };
     });
-    socket.on("start", function (id, verified) {
-        game[id].inProgress = true;
-        socket.to(id).emit("receive-start");
-        verified();
+    socket.on("start", function (raceId, callback) {
+        game[raceId].inProgress = true;
+        socket.to(raceId).emit("receive-start");
+        callback();
+    });
+    socket.on("send", function (raceId, userId, userData) {
+        game[raceId].players[userId].progress = userData.progress;
+        game[raceId].players[userId].wpm = userData.wpm;
+        socket.to(raceId).emit("receive", game[raceId]);
     });
 });
 

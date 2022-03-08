@@ -9,17 +9,19 @@ var timeStarted = false;
 
 function setInputPlaceholder(message) {
     input.setAttribute("placeholder", message);
-}
+};
+
+function removePlaceholderInputEventListener() {
+    input.removeEventListener("blur", setInputPlaceholder);
+    input.removeEventListener("focus", setInputPlaceholder);
+};
 
 input.addEventListener("blur", setInputPlaceholder("click here to focus"));
 input.addEventListener("focus", setInputPlaceholder("start typing..."));
 
 function replacePlaceholderInputEventListener(blurText, FocusText) {
     input.setAttribute("placeholder", FocusText);
-
-    input.removeEventListener("blur", setInputPlaceholder);
-    input.removeEventListener("focus", setInputPlaceholder);
-
+    removePlaceholderInputEventListener();
     input.addEventListener("blur", setInputPlaceholder(blurText));
     input.addEventListener("focus", setInputPlaceholder(FocusText));
 };
@@ -32,6 +34,11 @@ function updateSingleplayerGameState() {
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
 
+    updateCharacters(quoteSpanArray, inputArray);
+    updateIfSingleplayerGameDone(quoteSpanArray, inputArray);
+};
+
+function updateCharacters(quoteSpanArray, inputArray) {
     quoteSpanArray.forEach((charSpan, index) => {
         const char = inputArray[index];
 
@@ -57,11 +64,13 @@ function updateSingleplayerGameState() {
         } else if ((inputArray.length - 1 === index) && (charSpan.classList.contains("incorrect")))
             incorrect++;
     });
+};
 
+function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
         wpmDiv.innerText = "Your WPM is: " + getWpm();
-        accDiv.innerText = "Your Accuracy Percentage is: " + (100 * charLength / (charLength + incorrect)).toFixed(2) + "%";
+        accDiv.innerText = "Your Accuracy Percentage is: " + getAccuracy() + "%";
         incorrect = 0;
         input.readOnly = true;
     };
@@ -75,7 +84,7 @@ function isGameDone(qArr, iArr) {
             gameOver = false;
     });
     return gameOver;
-}
+};
 
 function startTimer() {
     if (!timeStarted) {
@@ -83,16 +92,20 @@ function startTimer() {
         timerId = setInterval(function() {time++;}, 1000);
         timeStarted = true;
     }
-}
+};
 
 function stopTimer() {
     clearInterval(timerId);
     timeStarted = false;
-}
+};
 
 function getWpm() {
     let cpm = charLength / (time / 60);
     return Math.floor(cpm / 5);
+};
+
+function getAccuracy() {
+    return (100 * charLength / (charLength + incorrect)).toFixed(2);
 }
 
 function singleplayerQuotable() {

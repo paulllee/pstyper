@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
         "charLen": charLen,
         "inProgress": false,
         "players": {}};
-        game[lobbyId].players[userId] = {"progress": 0, "wpm": 0}; 
+        game[lobbyId].players[userId] = {"progress": 0, "wpm": 0, "accuracy": 100}; 
     });
     socket.on("join", function (lobbyId, userId) {
         if (game[lobbyId] === undefined) {
@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
         } else if (game[lobbyId].inProgress) {
             socket.emit("join-quotable", game[lobbyId], false);
         } else {
-            game[lobbyId].players[userId] = {"progress": 0, "wpm": 0};
+            game[lobbyId].players[userId] = {"progress": 0};
             socket.join(lobbyId);
             socket.emit("join-quotable", game[lobbyId], false);
             console.log("user joined room " + lobbyId);
@@ -58,6 +58,7 @@ io.on("connection", (socket) => {
     socket.on("send", function (lobbyId, userId, userData, callback) {
         game[lobbyId].players[userId].progress = userData.progress;
         game[lobbyId].players[userId].wpm = userData.wpm;
+        game[lobbyId].players[userId].accuracy = userData.accuracy;
         socket.to(lobbyId).emit("receive", game[lobbyId]);
         callback(game[lobbyId]);
     });

@@ -4,6 +4,7 @@ const timerDiv = document.getElementById("timer");
 const scoreboard = document.getElementById("scoreboard");
 var charNum = 0;
 var lobbyId, userId;
+var winner = null;
 
 socket.on("connect", () => {
     userId = socket.id;
@@ -16,7 +17,7 @@ socket.on("connect", () => {
     } else {
         lobbyId = queryId;
         socket.emit("join", lobbyId, userId);
-    }
+    };
 
     socket.on("join-quotable", (game, error) => {
         joinMultiplayerQuotable(game, error);
@@ -27,11 +28,11 @@ socket.on("connect", () => {
     });
 
     socket.on("receive", (game) => {
-        updateScoreboard(game);
+        updateMultiplayerScoreboard(game);
     });
 });
 
-replacePlaceholderInputEventListener("waiting for players...", "waiting for players...");
+removePlaceholderInputEventListener();
 
 function startGame() {
     input.readOnly = false;
@@ -49,49 +50,28 @@ function updateMultiplayerGameState() {
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
 
-    quoteSpanArray.forEach((charSpan, index) => {
-        const char = inputArray[index];
+    updateCharacters(quoteSpanArray, inputArray);
+    updateIfTenCharsTyped(inputArray);
+    updateIfMultiplayerGameDone(quoteSpanArray, inputArray);
+};
 
-        if (char == null) {
-            charSpan.classList.add("incomplete");
-            charSpan.classList.remove("correct");
-            charSpan.classList.remove("incorrect");
-            charSpan.classList.remove("current");
-        } else if (char === charSpan.innerText) {
-            charSpan.classList.add("correct");
-            charSpan.classList.remove("incorrect");
-            charSpan.classList.remove("incomplete");
-            charSpan.classList.remove("current");
-        } else {
-            charSpan.classList.add("incorrect");
-            charSpan.classList.remove("correct");
-            charSpan.classList.remove("incomplete");
-            charSpan.classList.remove("current");
-        }
-
-        if (inputArray.length === index) {
-            charSpan.classList.add("current");
-        } else if ((inputArray.length - 1 === index) && (charSpan.classList.contains("incorrect")))
-            incorrect++;
-    });
-
+function updateIfTenCharsTyped(inputArray) {
     if (++charNum % 10 === 0) {
         let curProgress = Math.floor((inputArray.length / charLength) * 100);
-        let curWpm = getWpm();
-        let userData = {"progress": curProgress, "wpm": curWpm};
+        let userData = {"progress": curProgress, "wpm": getWpm(), "accuracy": getAccuracy()};
         socket.emit("send", lobbyId, userId, userData, (game) => {
-            updateScoreboard(game);
+            updateMultiplayerScoreboard(game);
         });
-    }
+    };
+}
 
+function updateIfMultiplayerGameDone(quoteSpanArray, inputArray) {
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
-        let userData = {"progress": 100, "wpm": getWpm()};
+        let userData = {"progress": 100, "wpm": getWpm(), "accuracy": getAccuracy()};
         socket.emit("send", lobbyId, userId, userData, (game) => {
-            updateScoreboard(game);
+            updateMultiplayerScoreboard(game);
         });
-        wpmDiv.innerText = "Your WPM is: " + getWpm();
-        accDiv.innerText = "Your Accuracy Percentage is: " + (100 * charLength / (charLength + incorrect)).toFixed(2) + "%";
         incorrect = 0;
         input.readOnly = true;
     };
@@ -113,22 +93,24 @@ function createStartButton() {
 };
 
 function startCountdown() {
-    let initialUserData = {"progress": 0, "wpm": 0};
+    let initialUserData = {"progress": 0, "wpm": 0, "accuracy": 100};
     socket.emit("send", lobbyId, userId, initialUserData, (game) => {
-        updateScoreboard(game);
+        updateMultiplayerScoreboard(game);
     });
-    replacePlaceholderInputEventListener("countdown has begun...", "countdown has begun...");
+    
+    removePlaceholderInputEventListener();
+    setInputPlaceholder("countdown has begun...");
     
     let timer = 11;
     let timerId = setInterval(function() {
         timerDiv.innerText = --timer;
         if (timer === 5) {
-            replacePlaceholderInputEventListener("get ready...", "get ready...");
+            setInputPlaceholder("get ready...");
         } else if (timer < 0) {
             clearInterval(timerId);
             timerDiv.innerText = "";
             startGame();
-        }
+        };
     }, 1000);
 };
 
@@ -138,12 +120,12 @@ function generateId() {
 
     for(let i = 0; i < 8; i++) {
         newId += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-    }
+    };
 
     return newId;
 };
 
-function updateScoreboard(game) {
+function updateMultiplayerScoreboard(game) {
     scoreboard.innerText = "";
 
     for (let [userId, data] of Object.entries(game.players)) {
@@ -154,9 +136,21 @@ function updateScoreboard(game) {
         progress.innerText = data.progress + "% completed";
         row.append(name);
         row.append(progress);
+        if (data.progress === 100) {
+            if (winner === null || winner === userId) {
+                winner = userId;
+                row.style.backgroundColor = "#32CD32";
+            };
+            let wpm = document.createElement("td");
+            let accuracy = document.createElement("td");
+            wpm.innerText = data.wpm + " wpm";
+            accuracy.innerText = data.accuracy + "% accurate";
+            row.append(wpm);
+            row.append(accuracy);
+        };
         scoreboard.append(row);
-    }
-}
+    };
+};
 
 function createMultiplayerQuotable() {
     fetch("/quotable", {

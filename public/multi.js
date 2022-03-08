@@ -1,11 +1,11 @@
 const socket = io();
 const buttonDiv = document.getElementById("button-container");
 const timerDiv = document.getElementById("timer");
+const linkDescDiv = document.getElementById("link-desc");
+const linkDiv = document.getElementById("link");
 var charNum = 0;
 var lobbyId, userId;
 var winner = null;
-var activePlayerNum = 0;
-var lobbyString = "waiting for players... (" + ++activePlayerNum + " player(s) active)";
 
 socket.on("connect", () => {
     userId = socket.id;
@@ -13,12 +13,9 @@ socket.on("connect", () => {
 
     if (queryId === "") {
         lobbyId = generateId();
-        scoreboard.innerText = "invite your friends with this link: http://*/multi.html?id=" + lobbyId;
-
-        input.setAttribute("placeholder", lobbyString);
-        input.addEventListener("blur", () => {input.setAttribute("placeholder", lobbyString)});
-        input.addEventListener("focus", () => {input.setAttribute("placeholder", lobbyString)});
-
+        linkDescDiv.innerText = "invite your friends with this link:";
+        linkDiv.innerText = "http://*/multi.html?id=" + lobbyId;
+        updatePlaceholderForLobbyString(1);
         createMultiplayerQuotable();
         createStartButton();
     } else {
@@ -29,15 +26,26 @@ socket.on("connect", () => {
     socket.on("join-quotable", (game, error) => {
         joinMultiplayerQuotable(game, error);
     });
+
+    socket.on("receive-joined-player", (playerNum) => {
+        updatePlaceholderForLobbyString(playerNum);
+    })
     
     socket.on("receive-start", () => {
         startCountdown();
     });
 
-    socket.on("receive", (game) => {
+    socket.on("receive-data", (game) => {
         updateMultiplayerScoreboard(game);
     });
 });
+
+function updatePlaceholderForLobbyString(playerNum) {
+    let lobbyString = playerNum + " player(s) joined the lobby [including yourself]";
+    input.setAttribute("placeholder", lobbyString);
+    input.addEventListener("blur", () => {input.setAttribute("placeholder", lobbyString)});
+    input.addEventListener("focus", () => {input.setAttribute("placeholder", lobbyString)});
+};
 
 function startGame() {
     input.readOnly = false;
@@ -67,17 +75,17 @@ function updateIfTenCharsTyped(inputArray) {
     if (++charNum % 10 === 0) {
         let curProgress = Math.floor((inputArray.length / charLength) * 100);
         let userData = {"progress": curProgress, "wpm": getWpm(), "accuracy": getAccuracy()};
-        socket.emit("send", lobbyId, userId, userData, (game) => {
+        socket.emit("send-data", lobbyId, userId, userData, (game) => {
             updateMultiplayerScoreboard(game);
         });
     };
-}
+};
 
 function updateIfMultiplayerGameDone(quoteSpanArray, inputArray) {
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
         let userData = {"progress": 100, "wpm": getWpm(), "accuracy": getAccuracy()};
-        socket.emit("send", lobbyId, userId, userData, (game) => {
+        socket.emit("send-data", lobbyId, userId, userData, (game) => {
             updateMultiplayerScoreboard(game);
         });
         incorrect = 0;
@@ -102,7 +110,7 @@ function createStartButton() {
 
 function startCountdown() {
     let initialUserData = {"progress": 0, "wpm": 0, "accuracy": 100};
-    socket.emit("send", lobbyId, userId, initialUserData, (game) => {
+    socket.emit("send-data", lobbyId, userId, initialUserData, (game) => {
         updateMultiplayerScoreboard(game);
     });
     
@@ -204,6 +212,9 @@ function joinMultiplayerQuotable(game, error) {
         quoteDiv.style.color = "red";
         input.style.display = "none";
     } else {
+        socket.emit("send-joined-player", Object.keys(game.players).length, lobbyId, () => {
+            updatePlaceholderForLobbyString(Object.keys(game.players).length);
+        });
         charLength = game.charLen;
         let quote = game.quote;
         quote.split("").forEach(char => {

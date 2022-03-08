@@ -44,22 +44,26 @@ io.on("connection", (socket) => {
         } else if (game[lobbyId].inProgress) {
             socket.emit("join-quotable", game[lobbyId], false);
         } else {
-            game[lobbyId].players[userId] = {"progress": 0};
+            game[lobbyId].players[userId] = {"progress": 0, "wpm": 0, "accuracy": 100};
             socket.join(lobbyId);
             socket.emit("join-quotable", game[lobbyId], false);
             console.log("user joined room " + lobbyId);
         };
+    });
+    socket.on("send-joined-player", (playerNum, lobbyId, callback) => {
+        socket.to(lobbyId).emit("receive-joined-player", playerNum);
+        callback();
     });
     socket.on("start", (lobbyId, callback) => {
         game[lobbyId].inProgress = true;
         socket.to(lobbyId).emit("receive-start");
         callback();
     });
-    socket.on("send", (lobbyId, userId, userData, callback) => {
+    socket.on("send-data", (lobbyId, userId, userData, callback) => {
         game[lobbyId].players[userId].progress = userData.progress;
         game[lobbyId].players[userId].wpm = userData.wpm;
         game[lobbyId].players[userId].accuracy = userData.accuracy;
-        socket.to(lobbyId).emit("receive", game[lobbyId]);
+        socket.to(lobbyId).emit("receive-data", game[lobbyId]);
         callback(game[lobbyId]);
     });
 });

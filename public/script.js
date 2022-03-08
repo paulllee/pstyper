@@ -2,28 +2,28 @@ const wpmDiv = document.getElementById("wpm");
 const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
 const input = document.getElementById("input");
-var startTime, finishTime, charLength;
-var startGame = true;
+const scoreboard = document.getElementById("scoreboard");
+var time, timerId, charLength;
 var firstLetter = true;
 var incorrect = 0;
+var timeStarted = false;
 
-input.addEventListener("blur", () => {
-    input.setAttribute("placeholder", "click here to focus");
-});
+input.setAttribute("placeholder", "start typing...");
+input.addEventListener("blur", () => {input.setAttribute("placeholder", "click here to focus")});
+input.addEventListener("focus", () => {input.setAttribute("placeholder", "start typing...")});
+input.addEventListener("input", updateSingleplayerGameState);
 
-input.addEventListener("focus", () => {
-    input.setAttribute("placeholder", "start typing...");
-});
-
-input.addEventListener("input", () => {
-    if (startGame === true) {
-        startTimer();
-        startGame = false;
-    };
+function updateSingleplayerGameState() {
+    startTimer();
 
     const quoteSpanArray = quoteDiv.querySelectorAll("span");
     const inputArray = input.value.split("");
-    
+
+    updateCharacters(quoteSpanArray, inputArray);
+    updateIfSingleplayerGameDone(quoteSpanArray, inputArray);
+};
+
+function updateCharacters(quoteSpanArray, inputArray) {
     quoteSpanArray.forEach((charSpan, index) => {
         const char = inputArray[index];
 
@@ -49,27 +49,30 @@ input.addEventListener("input", () => {
         } else if ((inputArray.length - 1 === index) && (charSpan.classList.contains("incorrect")))
             incorrect++;
     });
+};
 
+function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
     if (isGameDone(quoteSpanArray, inputArray)) {
-        startGame = true;
         stopTimer();
-        wpmDiv.innerText = "Your WPM is: " + getWPM();
-        accDiv.innerText = "Your Accuracy Percentage is: " + (100 * charLength / (charLength + incorrect)).toFixed(2) + "%";
+        let data = {"wpm": getWpm(), "accuracy": getAccuracy()};
+        updateSingleplayerScoreboard(data);
         incorrect = 0;
         input.readOnly = true;
     };
-});
+};
 
-function startTimer() {
-    startTime = new Date();
-}
+function updateSingleplayerScoreboard(data) {
+    scoreboard.innerText = "";
 
-function stopTimer() {
-    finishTime = new Date();
-}
+    let row = document.createElement("tr");
+    let wpm = document.createElement("td");
+    let accuracy = document.createElement("td");
+    wpm.innerText = data.wpm + " wpm";
+    accuracy.innerText = data.accuracy + "% accurate";
+    row.append(wpm);
+    row.append(accuracy);
 
-function getTime() {
-    return (finishTime - startTime)/1000;
+    scoreboard.append(row);
 }
 
 function isGameDone(qArr, iArr) {
@@ -80,22 +83,39 @@ function isGameDone(qArr, iArr) {
             gameOver = false;
     });
     return gameOver;
-}
+};
 
-function getWPM() {
-    let cpm = charLength / (getTime() / 60);
+function startTimer() {
+    if (!timeStarted) {
+        time = 0;
+        timerId = setInterval(() => {time++;}, 1000);
+        timeStarted = true;
+    }
+};
+
+function stopTimer() {
+    clearInterval(timerId);
+    timeStarted = false;
+};
+
+function getWpm() {
+    let cpm = charLength / (time / 60);
     return Math.floor(cpm / 5);
+};
+
+function getAccuracy() {
+    return (100 * charLength / (charLength + incorrect)).toFixed(2);
 }
 
-function updateQuotable() {
+function singleplayerQuotable() {
     fetch("/quotable", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
         }
-    }).then(function(response) {
+    }).then((response) => {
         return response.json();
-    }).then(function(data) {
+    }).then((data) => {
         if (data.status === 200) {
             const quote = data.content;
             charLength = data.len;

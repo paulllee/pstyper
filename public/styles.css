@@ -9,7 +9,6 @@
     font-size: 20px;
     margin-left: 15%;
     margin-right: 15%;
-    user-select: none;
 }
 
 .textarea {
@@ -27,6 +26,7 @@ textarea {
 
 .quote {
     margin-top: 15px;
+    user-select: none;
 }
 
 .incomplete {
@@ -46,6 +46,32 @@ textarea {
     text-decoration: underline;
 }
 
-body {
-    overflow: hidden;
+.button-container, .timer {
+    margin-top: 15px;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.link-desc, .link {
+    font-size: 15px;
+}
+
+/* temp styling for table */
+
+table {
+    font-size: 15px;
+	border-collapse: collapse;
+}
+
+th, td {
+	border: 1px solid black;
+	padding: 10px;
+}
+
+/* for button!
+.start {
+
+} 
+*/

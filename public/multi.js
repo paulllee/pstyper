@@ -146,17 +146,20 @@ function generateId() {
 function updateMultiplayerScoreboard(game) {
     scoreboard.innerText = "";
 
-    for (let [userId, data] of Object.entries(game.players)) {
+    for (let [curUserId, data] of Object.entries(game.players)) {
         let row = document.createElement("tr");
         let name = document.createElement("td");
         let progress = document.createElement("td");
-        name.innerText = userId;
+        if (curUserId === userId)
+            name.innerText = curUserId + " [you]";
+        else
+            name.innerText = curUserId;
         progress.innerText = data.progress + "% completed";
         row.append(name);
         row.append(progress);
         if (data.progress === 100) {
-            if (winner === null || winner === userId) {
-                winner = userId;
+            if (winner === null || winner === curUserId) {
+                winner = curUserId;
                 row.style.backgroundColor = "#32CD32";
             };
             let wpm = document.createElement("td");

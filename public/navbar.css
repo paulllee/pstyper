@@ -1,4 +1,6 @@
 ul {
+  font-family: monospace;
+  font-size: 15px;
   list-style-type: none;
   margin: 0;
   padding: 0;

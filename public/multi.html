@@ -6,11 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="navbar.css">
     <script src="/socket.io/socket.io.js"></script>
     <title>pstyper</title>
 </head>
 
 <body>
+    <nav class="navbar"> 
+        <div class="row">
+              <!-- <img src="resources/img/logo-white.png" alt="SAPLSEGS logo" class="logo"> -->
+            <ul class="main-nav js--main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="multi.html">Multiplayer</a></li>
+                <li style="float:right"><a href="create.html">Sign Up</a></li>
+                <li style="float:right"><a href="login.html">Sign in</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="main-game" id="main-game">
         <div class="link-desc" id="link-desc"></div>
         <div class="link" id="link"></div> 

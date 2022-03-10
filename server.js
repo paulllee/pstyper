@@ -95,16 +95,13 @@ app.post('/update/wpm', async (req, res) => {
     const user = list.find(user => user.name == username);
     
     if (user == null) {
-        console.log("user not found");
         return res.status(200).send("User not logged in");
     }
 
     if (req.body.wpm > user.bestWPM) {
-        console.log("higher");
         await User.doc(user.id).update({ bestWPM: req.body.wpm });
         res.send("bestWPM updated");
     } else {
-        console.log("else");
         res.send("bestWPM was higher");
     }
 });

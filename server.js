@@ -2,6 +2,8 @@ const axios = require("axios");
 const express = require("express");
 const app = express();
 const bcrypt = require('bcrypt');
+const cors = require('cors');
+const User = require('./db');
 
 const http = require('http');
 const { Server } = require("socket.io");
@@ -12,17 +14,18 @@ const io = new Server(server);
 const PORT = process.env.PORT || 3000;
 
 const game = {};
+var user;
 
 app.use(express.static("public"));
 app.use(express.json());
+app.use(cors());
 
 const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=150';
 
-const users = [];
-
-app.get('/user', (req, res) => {
-    res.json(users);
-    console.log(users);
+app.get('/user', async (req, res) => {
+    const snapshot = await User.get();
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    console.log(list);
 });
 
 app.post('/user', async (req, res) => {
@@ -30,9 +33,12 @@ app.post('/user', async (req, res) => {
         let username = req.body.username;
         let password = req.body.password;
 
+        const snapshot = await User.get();
+        const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
         var found = false;
-        for (var i = 0 ; i  < users.length; i++) {
-            if (users[i].username === username)
+        for (var i = 0 ; i  < list.length; i++) {
+            if (list[i].name == username)
                 found = true;
         }
         // TODO check if username already exists
@@ -49,8 +55,8 @@ app.post('/user', async (req, res) => {
             return res.status(401).send();
         }
         const hashedPassword = await bcrypt.hash(password, 10);    
-        const user = { name: username, password: hashedPassword };
-        users.push(user);
+        user = { name: username, password: hashedPassword };
+        User.add(user);
         res.send();
     } catch {
         res.status(500).send();
@@ -58,13 +64,14 @@ app.post('/user', async (req, res) => {
 });
 
 app.post('/auth', async (req, res)  => {
-    const user = users.find(user => user.name == req.body.username);
+    const snapshot = await User.get();
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const user = list.find(user => user.name == req.body.username);
+
     if (user == null) {
         return res.status(400).send("Cannot find user");
     }
 
-    console.log(req.body.password);
-    console.log(user.password);
     bcrypt.compare(req.body.password, user.password)
     .then(function (isSame) {
         if (isSame) {

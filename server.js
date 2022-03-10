@@ -49,12 +49,36 @@ app.post('/user', async (req, res) => {
             return res.status(401).send();
         }
         const hashedPassword = await bcrypt.hash(password, 10);    
-        const user = { username: req.body.username, password: hashedPassword };
+        const user = { name: username, password: hashedPassword };
         users.push(user);
         res.send();
     } catch {
         res.status(500).send();
     }
+});
+
+app.post('/auth', async (req, res)  => {
+    const user = users.find(user => user.name == req.body.username);
+    if (user == null) {
+        return res.status(400).send("Cannot find user");
+    }
+
+    console.log(req.body.password);
+    console.log(user.password);
+    bcrypt.compare(req.body.password, user.password)
+    .then(function (isSame) {
+        if (isSame) {
+            // password matched
+            res.status(200).send();
+        } else {
+            // password didn't match
+            res.status(401).send();
+        }
+    })
+    .catch(function (error) {
+        console.log(error);
+        res.status(500).send(); // server error
+    });
 });
 
 app.get("/quotable", (req, res) => {

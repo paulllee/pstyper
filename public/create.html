@@ -9,6 +9,7 @@
 <h2>Create new account</h2>
 
 <div>
+    <div id="create-status"></div>
 	<div>
 		<label name="username" for="username">Username:</label>
 		<input type="text" id="username">
@@ -26,6 +27,7 @@
 <script>
 let usernameInput = document.getElementById("username");
 let passwordInput = document.getElementById("password");
+let isAccepted = document.getElementById("create-status");
 
 document.getElementById("create").addEventListener("click", function () {
 	fetch("/user", {
@@ -39,9 +41,13 @@ document.getElementById("create").addEventListener("click", function () {
 		})
 	}).then(function (response) {
 		if (response.status === 200) {
-			console.log("Success1");
+			isAccepted.innerText = "Account was successfully created";
+            isAccepted.style.color = "green";
+            isAccepted.style.fontSize = "x-large";
 		} else {
-			console.log("Failure");
+			isAccepted.innerText = "Unable to create Account"
+            isAccepted.style.color = "red";
+            isAccepted.style.fontSize = "x-large";
 		}
 	})
 });

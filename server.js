@@ -1,13 +1,15 @@
 const axios = require("axios");
 const express = require("express");
 const app = express();
+const bcrypt = require('bcrypt');
 
 const http = require('http');
 const { Server } = require("socket.io");
+const { userInfo } = require("os");
 const server = http.createServer(app);
 const io = new Server(server);
 
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 const game = {};
 
@@ -15,6 +17,45 @@ app.use(express.static("public"));
 app.use(express.json());
 
 const QUOTABLE_API_URL = 'https://api.quotable.io/random?minLength=100&maxLength=150';
+
+const users = [];
+
+app.get('/user', (req, res) => {
+    res.json(users);
+    console.log(users);
+});
+
+app.post('/user', async (req, res) => {
+    try {
+        let username = req.body.username;
+        let password = req.body.password;
+
+        var found = false;
+        for (var i = 0 ; i  < users.length; i++) {
+            if (users[i].username === username)
+                found = true;
+        }
+        // TODO check if username already exists
+        if (
+            typeof username !== "string" ||
+            typeof password !== "string" ||
+            username.length < 1 ||
+            username.length > 20 ||
+            password.length < 8 ||
+            password.length > 20 ||
+            found
+        ) {
+            // username and/or password invalid
+            return res.status(401).send();
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);    
+        const user = { username: req.body.username, password: hashedPassword };
+        users.push(user);
+        res.send();
+    } catch {
+        res.status(500).send();
+    }
+});
 
 app.get("/quotable", (req, res) => {
     axios.get(QUOTABLE_API_URL).then((response) => {
@@ -68,6 +109,6 @@ io.on("connection", (socket) => {
     });
 });
 
-server.listen(port, () => {
-    console.log(`listening at: http://*:${port}`);
+server.listen(PORT, () => {
+    console.log(`listening at: http://*:${PORT}`);
 });

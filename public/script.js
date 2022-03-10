@@ -56,10 +56,29 @@ function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
         stopTimer();
         let data = {"wpm": getWpm(), "accuracy": getAccuracy()};
         updateSingleplayerScoreboard(data);
+        updatePlayerBestWPM(getWpm());
         incorrect = 0;
         input.readOnly = true;
     };
 };
+
+function updatePlayerBestWPM(wpm) {
+    fetch("/update/wpm", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			wpm: wpm
+		})
+	}).then(function (response) {
+		if (response.status === 200) {
+			console.log("Recieved Data");
+		} else {
+			console.log("Data not recieved");
+		}
+	});
+}
 
 function updateSingleplayerScoreboard(data) {
     scoreboard.innerText = "";

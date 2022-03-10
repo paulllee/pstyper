@@ -14,7 +14,7 @@ const io = new Server(server);
 const PORT = process.env.PORT || 3000;
 
 const game = {};
-var user;
+var username = "";
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -55,7 +55,7 @@ app.post('/user', async (req, res) => {
             return res.status(401).send();
         }
         const hashedPassword = await bcrypt.hash(password, 10);    
-        user = { name: username, password: hashedPassword };
+        user = { name: username, password: hashedPassword, bestWPM: 0 };
         User.add(user);
         res.send();
     } catch {
@@ -67,6 +67,7 @@ app.post('/auth', async (req, res)  => {
     const snapshot = await User.get();
     const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     const user = list.find(user => user.name == req.body.username);
+    username = user.name;
 
     if (user == null) {
         return res.status(400).send("Cannot find user");
@@ -88,12 +89,33 @@ app.post('/auth', async (req, res)  => {
     });
 });
 
+app.post('/update/wpm', async (req, res) => {
+    const snapshot = await User.get();
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const user = list.find(user => user.name == username);
+    
+    if (user == null) {
+        console.log("user not found");
+        return res.status(200).send("User not logged in");
+    }
+
+    if (req.body.wpm > user.bestWPM) {
+        console.log("higher");
+        await User.doc(user.id).update({ bestWPM: req.body.wpm });
+        res.send("bestWPM updated");
+    } else {
+        console.log("else");
+        res.send("bestWPM was higher");
+    }
+});
+
 app.get("/quotable", (req, res) => {
     axios.get(QUOTABLE_API_URL).then((response) => {
         res.status(200);
-        res.json({"status": 200,
-        "content": response.data.content,
-        "len": response.data.length});
+        res.json({
+            "status": 200,
+            "content": response.data.content,
+            "len": response.data.length});
     }).catch(() => {
         res.status(400);
         res.json({"status": 400});

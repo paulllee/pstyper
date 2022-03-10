@@ -1,13 +1,37 @@
 # pstyper
 
-developed by selim genel and paul lee
+...
 
-# temporary notes
+## Description
 
-nodejs
-npm install
-express, axios, socket.io
+An in-depth paragraph about your project and overview of use.
 
-https://github.com/lukePeavey/quotable
+## Getting Started
 
-https://github.com/RazorSh4rk/random-word-api
+...
+
+### Dependencies
+
+- nodejs, express, axios, socket.io
+
+### Installing
+
+- npm install
+
+### Executing program
+
+...
+
+## Authors
+
+- developed by PLSE
+  - [paul lee](https://github.com/paulllee)
+  - [selim genel](https://github.com/segenel)
+
+<!-- ## License
+
+This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details -->
+
+## Acknowledgments
+
+- [Quotable API](https://github.com/lukePeavey/quotable)

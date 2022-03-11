@@ -74,7 +74,7 @@ app.post('/auth', async (req, res)  => {
     }
 
     bcrypt.compare(req.body.password, user.password)
-    .then(function (isSame) {
+    .then((isSame) => {
         if (isSame) {
             // password matched
             res.status(200).send();
@@ -83,7 +83,7 @@ app.post('/auth', async (req, res)  => {
             res.status(401).send();
         }
     })
-    .catch(function (error) {
+    .catch((error) => {
         console.log(error);
         res.status(500).send(); // server error
     });

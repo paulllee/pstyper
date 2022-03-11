@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="styles.css">
 	<!-- <img src="resources/img/logo-white.png" alt="SAPLSEGS logo" class="logo"> -->
-	<title>Create</title>
+	<title>create</title>
 </head>
 <body>
 	<nav class="navbar" id="navbar"> 
@@ -23,8 +23,9 @@
 	<div class="account-container" id="account-container">
 		<h2>create new account</h2>
 
+		<div id="create-status"></div>
+
 		<div>
-			<div id="create-status"></div>
 			<div>
 				<label name="username" for="username">username:</label>
 				<input type="text" id="username">
@@ -35,7 +36,7 @@
 			</div>
 		</div>
 
-		<button class="create" id="create">create account</button>
+		<button class="create" id="create">sign up</button>
 
 		<a href="login.html" class="account-href" id="account-href">already have an account?</a>
 	</div>
@@ -45,7 +46,7 @@
 		let passwordInput = document.getElementById("password");
 		let isAccepted = document.getElementById("create-status");
 
-		document.getElementById("create").addEventListener("click", function () {
+		document.getElementById("create").addEventListener("click", () => {
 			fetch("/user", {
 				method: "POST",
 				headers: {
@@ -55,15 +56,13 @@
 					username: usernameInput.value,
 					password: passwordInput.value,
 				})
-			}).then(function (response) {
+			}).then((response) => {
 				if (response.status === 200) {
-					isAccepted.innerText = "Account was successfully created";
+					isAccepted.innerText = "account was successfully created";
 					isAccepted.style.color = "green";
-					isAccepted.style.fontSize = "x-large";
 				} else {
-					isAccepted.innerText = "Unable to create Account"
+					isAccepted.innerText = "unable to create account"
 					isAccepted.style.color = "red";
-					isAccepted.style.fontSize = "x-large";
 				}
 			})
 		});

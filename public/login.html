@@ -20,23 +20,27 @@
 		</div>
 	</nav>
 
-	<h2>Log in</h2>
+	<div class="account-container" id="account-container">
 
-	<div>
-		<div id="invalid"></div>
+		<h2>login</h2>
+
 		<div>
-			<label name="username" for="username">Username:</label>
-			<input type="text" id="username">
+			<div id="invalid"></div>
+			<div>
+				<label name="username" for="username">username:</label>
+				<input type="text" id="username">
+			</div>
+			<div>
+				<label name="password" for="password">password:</label>
+				<input type="password" id="password">
+			</div>
 		</div>
-		<div>
-			<label name="password" for="password">Password:</label>
-			<input type="password" id="password">
-		</div>
+
+		<button class="login" id="login">login</button>
+
+		<a href="create.html" class="account-href" id="account-href">need an account?</a>
+
 	</div>
-
-	<button class="login" id="login">Log in</button>
-
-	<p><a href="create.html">Need an account?</a></p>
 
 	<script>
 	let usernameInput = document.getElementById("username");

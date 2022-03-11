@@ -1,3 +1,7 @@
+body {
+  font-family: monospace;
+}
+
 .main-game {
   display: flex;
   justify-content: center;
@@ -5,7 +9,6 @@
   flex-direction: column;
   position: relative;
   min-height: 100vh;
-  font-family: monospace;
   font-size: 20px;
   margin-left: 15%;
   margin-right: 15%;
@@ -60,8 +63,6 @@ textarea {
   font-size: 15px;
 }
 
-/* temp styling for table */
-
 table {
   font-size: 15px;
   border-collapse: collapse;
@@ -73,7 +74,13 @@ td {
   padding: 10px;
 }
 
-ul {
+nav {
+  position: sticky;
+  top: 15px;
+  font-size: 15px;
+}
+
+ul {  
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -89,7 +96,7 @@ li a {
   display: block;
   color: white;
   text-align: center;
-  padding: 14px 16px;
+  padding: 15px 15px;
   text-decoration: none;
 }
 
@@ -97,8 +104,18 @@ li a {
 li a:hover {
   background-color: #111;
 }
-/* for button!
-.start {
 
+.start, .login, .create {
+  display: inline-block;
+  outline: none;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 12px;
+  padding: 2px 10px;
+  min-width: 10px;
+  min-height: 25px;
+  border: none;
+  color: #fff;
+  background-color: #4f545c;
 } 
-*/
+

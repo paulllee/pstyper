@@ -2,66 +2,68 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="navbar.css">
+	<link rel="stylesheet" href="styles.css">
+	<!-- <img src="resources/img/logo-white.png" alt="SAPLSEGS logo" class="logo"> -->
 	<title>Log in</title>
 </head>
 <body>
-<nav class="navbar"> 
-	<div class="row">
-			<!-- <img src="resources/img/logo-white.png" alt="SAPLSEGS logo" class="logo"> -->
-		<ul class="main-nav js--main-nav">
-			<li><a href="index.html">pstyper</a></li>
-			<li><a href="multi.html">multiplayer</a></li>
-			<li style="float:right"><a href="create.html">sign up</a></li>
-			<li style="float:right"><a href="login.html">sign in</a></li>
-		</ul>
-	</div>
-</nav>
+	<nav class="navbar" id="navbar"> 
+		<div class="row" id="row">
+			<ul class="main-nav js--main-nav">
+				<li><a href="index.html">pstyper</a></li>
+				<li><a href="multi.html">multiplayer</a></li>
+				<div class="sign" id="sign">
+					<li style="float:right"><a href="create.html">sign up</a></li>
+					<li style="float:right"><a href="login.html">sign in</a></li>
+				</div>
+			</ul>
+		</div>
+	</nav>
 
-<h2>Log in</h2>
+	<h2>Log in</h2>
 
-<div>
-    <div id="invalid"></div>
 	<div>
-		<label name="username" for="username">Username:</label>
-		<input type="text" id="username">
+		<div id="invalid"></div>
+		<div>
+			<label name="username" for="username">Username:</label>
+			<input type="text" id="username">
+		</div>
+		<div>
+			<label name="password" for="password">Password:</label>
+			<input type="password" id="password">
+		</div>
 	</div>
-	<div>
-		<label name="password" for="password">Password:</label>
-		<input type="password" id="password">
-	</div>
-</div>
 
-<button id="login">Log in</button>
+	<button class="login" id="login">Log in</button>
 
-<p><a href="create.html">Need an account?</a></p>
+	<p><a href="create.html">Need an account?</a></p>
 
-<script>
-let usernameInput = document.getElementById("username");
-let passwordInput = document.getElementById("password");
-let isInvalid = document.getElementById("invalid");
+	<script>
+	let usernameInput = document.getElementById("username");
+	let passwordInput = document.getElementById("password");
+	let isInvalid = document.getElementById("invalid");
 
-document.getElementById("login").addEventListener("click", function () {
-	fetch("/auth", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({
-			username: usernameInput.value,
-			password: passwordInput.value,
-		})
-	}).then(function (response) {
-		if (response.status === 200) {
-			window.location.href = "http://localhost:3000";
-		} else {
-			isInvalid.innerText = "Incorrect Username or password"
-            isInvalid.style.color = "red";
-            isInvalid.style.fontSize = "x-large";
-		}
+	document.getElementById("login").addEventListener("click", function () {
+		fetch("/auth", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				username: usernameInput.value,
+				password: passwordInput.value,
+			})
+		}).then(function (response) {
+			if (response.status === 200) {
+				window.location.href = "http://localhost:3000";
+			} else {
+				isInvalid.innerText = "Incorrect Username or password"
+				isInvalid.style.color = "red";
+				isInvalid.style.fontSize = "x-large";
+			}
+		});
 	});
-});
-</script>
+	</script>
 
 </body>
 </html>

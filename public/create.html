@@ -2,68 +2,69 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="navbar.css">
+	<link rel="stylesheet" href="styles.css">
+	<!-- <img src="resources/img/logo-white.png" alt="SAPLSEGS logo" class="logo"> -->
 	<title>Create</title>
 </head>
 <body>
-<nav class="navbar"> 
-	<div class="row">
-		<!-- <img src="resources/img/logo-white.png" alt="SAPLSEGS logo" class="logo"> -->
-		<ul class="main-nav js--main-nav">
-			<li><a href="index.html">pstyper</a></li>
-			<li><a href="multi.html">multiplayer</a></li>
-			<li style="float:right"><a href="create.html">sign up</a></li>
-			<li style="float:right"><a href="login.html">sign in</a></li>
-		</ul>
-	</div>
-</nav>
+	<nav class="navbar" id="navbar"> 
+		<div class="row" id="row">
+			<ul class="main-nav js--main-nav">
+				<li><a href="index.html">pstyper</a></li>
+				<li><a href="multi.html">multiplayer</a></li>
+				<div class="sign" id="sign">
+					<li style="float:right"><a href="create.html">sign up</a></li>
+					<li style="float:right"><a href="login.html">sign in</a></li>
+				</div>
+			</ul>
+		</div>
+	</nav>
 
-<h2>Create new account</h2>
+	<h2>Create new account</h2>
 
-<div>
-    <div id="create-status"></div>
 	<div>
-		<label name="username" for="username">Username:</label>
-		<input type="text" id="username">
+		<div id="create-status"></div>
+		<div>
+			<label name="username" for="username">Username:</label>
+			<input type="text" id="username">
+		</div>
+		<div>
+			<label name="password" for="password">Password:</label>
+			<input type="password" id="password">
+		</div>
 	</div>
-	<div>
-		<label name="password" for="password">Password:</label>
-		<input type="password" id="password">
-	</div>
-</div>
 
-<button id="create">Create account</button>
+	<button class="create" id="create">Create account</button>
 
-<p><a href="login.html">Already have an account?</a></p>
+	<p><a href="login.html">Already have an account?</a></p>
 
-<script>
-let usernameInput = document.getElementById("username");
-let passwordInput = document.getElementById("password");
-let isAccepted = document.getElementById("create-status");
+	<script>
+	let usernameInput = document.getElementById("username");
+	let passwordInput = document.getElementById("password");
+	let isAccepted = document.getElementById("create-status");
 
-document.getElementById("create").addEventListener("click", function () {
-	fetch("/user", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({
-			username: usernameInput.value,
-			password: passwordInput.value,
+	document.getElementById("create").addEventListener("click", function () {
+		fetch("/user", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				username: usernameInput.value,
+				password: passwordInput.value,
+			})
+		}).then(function (response) {
+			if (response.status === 200) {
+				isAccepted.innerText = "Account was successfully created";
+				isAccepted.style.color = "green";
+				isAccepted.style.fontSize = "x-large";
+			} else {
+				isAccepted.innerText = "Unable to create Account"
+				isAccepted.style.color = "red";
+				isAccepted.style.fontSize = "x-large";
+			}
 		})
-	}).then(function (response) {
-		if (response.status === 200) {
-			isAccepted.innerText = "Account was successfully created";
-            isAccepted.style.color = "green";
-            isAccepted.style.fontSize = "x-large";
-		} else {
-			isAccepted.innerText = "Unable to create Account"
-            isAccepted.style.color = "red";
-            isAccepted.style.fontSize = "x-large";
-		}
-	})
-});
-</script>
-
+	});
+	</script>
 </body>
 </html>

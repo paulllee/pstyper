@@ -97,7 +97,7 @@ function createStartButton() {
     let button = document.createElement("button");
     button.classList.add("start");
     button.setAttribute("id", "start");
-    button.innerText = "start game!";
+    button.innerText = "start game for lobby";
     buttonDiv.append(button);
     const startButton = document.getElementById("start");
     startButton.addEventListener("click", () => {

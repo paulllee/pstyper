@@ -52,6 +52,7 @@ function updateCharacters(quoteSpanArray, inputArray) {
 };
 
 function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
+    console.log("hi " + isGameDone(quoteSpanArray, inputArray));
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
         let data = {"wpm": getWpm(), "accuracy": getAccuracy()};
@@ -59,6 +60,7 @@ function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
         updatePlayerBestWPM(getWpm());
         incorrect = 0;
         input.readOnly = true;
+        input.classList.add("completed-input");
     };
 };
 
@@ -73,9 +75,9 @@ function updatePlayerBestWPM(wpm) {
 		})
 	}).then(function (response) {
 		if (response.status === 200) {
-			console.log("Recieved Data");
+			console.log("recieved data");
 		} else {
-			console.log("Data not recieved");
+			console.log("data not recieved");
 		}
 	});
 }

@@ -14,7 +14,7 @@ socket.on("connect", () => {
     if (queryId === "") {
         lobbyId = generateId();
         linkDescDiv.innerText = "invite your friends with this link:";
-        linkDiv.innerText = "http://*/multi.html?id=" + lobbyId;
+        linkDiv.innerText = window.location.href + "?id=" + lobbyId;
         updatePlaceholderForLobbyString(1);
         createMultiplayerQuotable();
         createStartButton();
@@ -41,7 +41,7 @@ socket.on("connect", () => {
 });
 
 function updatePlaceholderForLobbyString(playerNum) {
-    let lobbyString = playerNum + " player(s) joined the lobby [including yourself]";
+    let lobbyString = playerNum + " player(s) in lobby !";
     input.setAttribute("placeholder", lobbyString);
     input.addEventListener("blur", () => {input.setAttribute("placeholder", lobbyString)});
     input.addEventListener("focus", () => {input.setAttribute("placeholder", lobbyString)});

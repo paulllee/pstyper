@@ -160,5 +160,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`listening at: http://*:${PORT}`);
+    console.log(`listening at: *:${PORT}`);
 });

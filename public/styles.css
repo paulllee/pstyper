@@ -29,9 +29,14 @@ span {
   user-select: none !important;
 }
 
+.textarea {
+  width: 75%;
+}
+
 textarea {
+  width: 100%;
   font-size: 10px;
-  height: 8.5px;
+  height: 21px;
   resize: none;
   outline: none;
   border: none;

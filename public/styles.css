@@ -20,7 +20,7 @@ html, body {
   margin-right: 15%;
 }
 
-.textarea, .quote, .timer, .account-href {
+.textarea, .quote, .timer, .account-href, .scoreboard-container {
   margin-top: 15px;
 }
 

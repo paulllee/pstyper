@@ -93,7 +93,7 @@ function displayUserBest() {
     }).then((data) => {
         if (data.status == 200) {
             console.log("Yes");
-            userBest.innerText = "Hi " + data.name + ", your highest wpm so far is: " + data.bestWPM;
+            userBest.innerText = "hi " + data.name + ", your highest wpm so far is: " + data.bestWPM;
         } else {
             console.log("Not logged in");
         };

@@ -41,7 +41,7 @@ socket.on("connect", () => {
 });
 
 function updatePlaceholderForLobbyString(playerNum) {
-    let lobbyString = playerNum + " player(s) in lobby !";
+    let lobbyString = playerNum + " player(s) in the lobby [including yourself]";
     input.setAttribute("placeholder", lobbyString);
     input.addEventListener("blur", () => {input.setAttribute("placeholder", lobbyString)});
     input.addEventListener("focus", () => {input.setAttribute("placeholder", lobbyString)});

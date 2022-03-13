@@ -1,6 +1,7 @@
 const wpmDiv = document.getElementById("wpm");
 const accDiv = document.getElementById("acc");
 const quoteDiv = document.getElementById("quote");
+const userBest = document.getElementById("user-best");
 const input = document.getElementById("input");
 const scoreboard = document.getElementById("scoreboard");
 var time, timerId, charLength;
@@ -52,7 +53,6 @@ function updateCharacters(quoteSpanArray, inputArray) {
 };
 
 function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
-    console.log("hi " + isGameDone(quoteSpanArray, inputArray));
     if (isGameDone(quoteSpanArray, inputArray)) {
         stopTimer();
         let data = {"wpm": getWpm(), "accuracy": getAccuracy()};
@@ -60,7 +60,6 @@ function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
         updatePlayerBestWPM(getWpm());
         incorrect = 0;
         input.readOnly = true;
-        input.classList.add("completed-input");
     };
 };
 
@@ -75,11 +74,30 @@ function updatePlayerBestWPM(wpm) {
 		})
 	}).then(function (response) {
 		if (response.status === 200) {
-			console.log("recieved data");
+			console.log("Recieved Data");
 		} else {
-			console.log("data not recieved");
+			console.log("Data not recieved");
 		}
 	});
+}
+
+function displayUserBest() {
+    console.log("called");
+    fetch("/display", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        if (data.status == 200) {
+            console.log("Yes");
+            userBest.innerText = "Hi " + data.name + ", your highest wpm so far is: " + data.bestWPM;
+        } else {
+            console.log("Not logged in");
+        };
+    });
 }
 
 function updateSingleplayerScoreboard(data) {
@@ -129,6 +147,7 @@ function getAccuracy() {
 }
 
 function singleplayerQuotable() {
+    displayUserBest();
     fetch("/quotable", {
         method: "GET",
         headers: {

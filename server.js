@@ -106,6 +106,17 @@ app.post('/update/wpm', async (req, res) => {
     }
 });
 
+app.get("/display", async (req, res) => {
+    const snapshot = await User.get();
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const user = list.find(user => user.name == username);
+    if (user == null) {
+        res.json({ "status": 201 });
+    } else {
+        res.json({ "status": 200, "name": user.name, "bestWPM": user.bestWPM });
+    }
+});
+
 app.get("/quotable", (req, res) => {
     axios.get(QUOTABLE_API_URL).then((response) => {
         res.status(200);

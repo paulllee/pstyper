@@ -7,7 +7,6 @@ const User = require('./db');
 
 const http = require('http');
 const { Server } = require("socket.io");
-const { userInfo } = require("os");
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -67,21 +66,18 @@ app.post('/auth', async (req, res)  => {
     const snapshot = await User.get();
     const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     const user = list.find(user => user.name == req.body.username);
-    username = user.name;
 
-    if (user == null) {
+    if (user == null)
         return res.status(400).send("Cannot find user");
-    }
+    else
+        username = user.name;
 
     bcrypt.compare(req.body.password, user.password)
     .then((isSame) => {
-        if (isSame) {
-            // password matched
+        if (isSame)
             res.status(200).send();
-        } else {
-            // password didn't match
+        else 
             res.status(401).send();
-        }
     })
     .catch((error) => {
         console.log(error);
@@ -171,5 +167,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`listening at: *:${PORT}`);
+    console.log(`listening on port: ${PORT}`);
 });

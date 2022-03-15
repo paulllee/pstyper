@@ -58,6 +58,7 @@ function updateIfSingleplayerGameDone(quoteSpanArray, inputArray) {
         let data = {"wpm": getWpm(), "accuracy": getAccuracy()};
         updateSingleplayerScoreboard(data);
         updatePlayerBestWPM(getWpm());
+        input.classList.add("completed-input");
         incorrect = 0;
         input.readOnly = true;
     };

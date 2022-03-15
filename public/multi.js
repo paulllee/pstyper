@@ -88,6 +88,7 @@ function updateIfMultiplayerGameDone(quoteSpanArray, inputArray) {
         socket.emit("send-data", lobbyId, userId, userData, (game) => {
             updateMultiplayerScoreboard(game);
         });
+        input.classList.add("completed-input");
         incorrect = 0;
         input.readOnly = true;
     };

@@ -24,7 +24,7 @@ Follow the next few steps to run the server locally.
 2. Go into a desired directory of your choice and clone the repository into that directory running the following command in your terminal: `git clone https://github.com/paulllee/pstyper.git`
 3. Move into the repository that you just cloned and run `npm install` in your terminal to install the necessary Node.js packages
 4. After, run `git update-index --skip-worktree env.json` in your terminal to ignore future changes with env.json
-5. (OPTIONAL - if you opt out of doing step 4, you won't be able to store your highest wpm in your database) Next create a Firebase project using your Google account
+5. (OPTIONAL - if you opt out of doing step 5, you won't be able to store your highest wpm in your database) Next create a Firebase project using your Google account
    1. After creating the project, create a Firestore Database
    2. Add Firebase to your web app to generate a config
    3. Copy and paste each value in the config corresponding to the same keys in the `env.json` file in the root directory of this repo

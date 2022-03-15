@@ -1,7 +1,13 @@
 const firebase = require("firebase");
-const config = require("./env.json");
+var config;
 
-firebase.initializeApp(JSON.parse(process.env.CONFIG) || config);
+try {
+    config = JSON.parse(process.env.CONFIG);
+} catch (error) {
+    config = require("./env.json");
+}
+
+firebase.initializeApp(config);
 const db = firebase.firestore();
 const User = db.collection("users");
 module.exports = User;

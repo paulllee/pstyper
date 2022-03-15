@@ -1,37 +1,34 @@
 # pstyper
 
-...
-
-## Description
-
-An in-depth paragraph about your project and overview of use.
+A minimalistic typeracer game with singleplayer and multiplayer modes! 
+Race against yourself or with your friends to improve your typing speed and accuracy or to stir up competition.
+You can store your highest words per minute (only in singleplayer) in our database by simply creating an account with us.
 
 ## Getting Started
 
-...
+This game has been deployed via Heroku and can be played on: https://pstyper.herokuapp.com/
+
+You can also run the server locally and it would be playable on: http://localhost:3000/
+
+Follow the next few steps to run the server locally.
 
 ### Dependencies
 
-- nodejs, express, axios, socket.io
+- latest version of git >> [download here](https://git-scm.com/downloads)
+- latest version of Node.js >> [download here](https://nodejs.org/en/download/)
 
-### Installing
+### Installation
 
-- npm install
-
-### Executing program
-
-...
+1. Install the two dependencies listed above. For **Node.js**, ensure that it is added to PATH so you can run the commands in any directory. 
+2. Go into a desired directory of your choice and clone the repository into that directory running the following command in your terminal: `git clone https://github.com/paulllee/pstyper.git`
+3. Move into the repository that you just cloned and run `npm install` in your terminal to install the necessary Node.js packages
+4. After the packages finish installing, you can run the server using `node server` and if successful, `listening on port: 3000` will appear in the terminal.
+5. You can now visit http://localhost:3000/ in your web browser to play the game!
 
 ## Authors
 
-- developed by PLSE
-  - [paul lee](https://github.com/paulllee)
-  - [selim genel](https://github.com/segenel)
+[paul lee](https://github.com/paulllee) and [selim genel](https://github.com/segenel) developed pstyper!
 
 <!-- ## License
 
 This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details -->
-
-## Acknowledgments
-
-- [Quotable API](https://github.com/lukePeavey/quotable)

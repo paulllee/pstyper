@@ -14,16 +14,21 @@ Follow the next few steps to run the server locally.
 
 ### Dependencies
 
-- latest version of git >> [download here](https://git-scm.com/downloads)
-- latest version of Node.js >> [download here](https://nodejs.org/en/download/)
+- git >> [download here](https://git-scm.com/downloads)
+- Node.js >> [download here](https://nodejs.org/en/download/)
+- Firebase Project >> [here](https://firebase.google.com/)
 
 ### Installation
 
 1. Install the two dependencies listed above. For **Node.js**, ensure that it is added to PATH so you can run the commands in any directory. 
 2. Go into a desired directory of your choice and clone the repository into that directory running the following command in your terminal: `git clone https://github.com/paulllee/pstyper.git`
 3. Move into the repository that you just cloned and run `npm install` in your terminal to install the necessary Node.js packages
-4. After the packages finish installing, you can run the server using `node server` and if successful, `listening on port: 3000` will appear in the terminal.
-5. You can now visit http://localhost:3000/ in your web browser to play the game!
+4. (OPTIONAL - if you opt out of doing step 4, you won't be able to store your highest wpm in your database) Next create a Firebase project using your Google account
+   1. After creating the project, create a Firestore Database
+   2. Add Firebase to your web app to generate a config
+   3. Copy and paste each value in the config corresponding to the same keys in the `env.json` file in the root directory of this repo
+5. After the packages finish installing, you can run the server using `node server` and if successful, `listening on port: 3000` will appear in the terminal.
+6. You can now visit http://localhost:3000/ in your web browser to play the game!
 
 ## Authors
 

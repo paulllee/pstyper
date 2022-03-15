@@ -31,6 +31,10 @@ Follow the next few steps to run the server locally.
 6. After the packages finish installing, you can run the server using `node server` and if successful, `listening on port: 3000` will appear in the terminal.
 7. You can now visit http://localhost:3000/ in your web browser to play the game!
 
+## License
+
+Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
+
 ## Authors
 
 [paul lee](https://github.com/paulllee) and [selim genel](https://github.com/segenel) developed pstyper!

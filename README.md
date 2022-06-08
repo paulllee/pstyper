@@ -6,7 +6,7 @@ You can store your highest words per minute (only in singleplayer) in our databa
 
 ## Getting Started
 
-This game has been deployed via Heroku and can be played on: <s>https://pstyper.herokuapp.com/</s> *Currently not functional - Firebase Database Inactive*
+This game has been deployed via Heroku and can be played on: <s>https://pstyper.herokuapp.com/</s> *Currently not functional - Firebase database inactive*
 
 You can also run the server locally and it would be playable on: http://localhost:3000/
 

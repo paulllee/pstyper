@@ -6,7 +6,7 @@ You can store your highest words per minute (only in singleplayer) in our databa
 
 ## Getting Started
 
-This game has been deployed via Heroku and can be played on: https://pstyper.herokuapp.com/
+This game has been deployed via Heroku and can be played on: (unsupported) ~~https://pstyper.herokuapp.com/~~
 
 You can also run the server locally and it would be playable on: http://localhost:3000/
 
